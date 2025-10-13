@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#00796B">
+  <meta name="description" content="12-Week Workout Tracker - Weeks 42-53">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Workout Tracker W42-W53</title>
+  
+  <link rel="manifest" id="manifest-placeholder">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: #f5f5f5;
+      color: #333;
+      line-height: 1.6;
+      padding-bottom: 20px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+    
+    .header {
+      background: linear-gradient(135deg, #00796B 0%, #004D40 100%);
+      color: white;
+      padding: 32px 24px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      box-shadow: 0 4px 12px rgba(0,121,107,0.3);
+    }
+    
+    .header h1 {
+      font-size: 32px;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+    
+    .header p {
+      opacity: 0.9;
+      font-size: 16px;
+    }
+    
+    .header small {
+      display: block;
+      margin-top: 8px;
+      opacity: 0.7;
+      font-size: 13px;
+    }
+    
+    .week-selector {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .week-selector h2 {
+      color: #00796B;
+      margin-bottom: 20px;
+      font-size: 22px;
+      font-weight: 600;
+    }
+    
+    .week-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(85px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    
+    .week-btn {
+      padding: 18px 12px;
+      border: 2px solid #00796B;
+      border-radius: 10px;
+      background: white;
+      cursor: pointer;
+      font-weight: 600;
+      text-align: center;
+      transition: all 0.3s ease;
+      font-size: 16px;
+      touch-action: manipulation;
+    }
+    
+    .week-btn:active {
+      transform: scale(0.95);
+    }
+    
+    .week-btn:hover {
+      background: #E0F2F1;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,121,107,0.2);
+    }
+    
+    .week-btn.active {
+      background: #00796B;
+      color: white;
+      box-shadow: 0 4px 12px rgba(0,121,107,0.4);
+      border-width: 3px;
+    }
+    
+    .week-btn.deload {
+      border-color: #F4511E;
+    }
+    
+    .week-btn.deload.active {
+      background: #F4511E;
+      border-color: #F4511E;
+    }
+    
+    .week-btn small {
+      display: block;
+      font-size: 11px;
+      margin-top: 6px;
+      opacity: 0.85;
+      font-weight: 500;
+    }
+    
+    .phase-info {
+      padding: 18px;
+      background: linear-gradient(135deg, #E0F2F1 0%, #B2DFDB 100%);
+      border-radius: 10px;
+      border-left: 5px solid #00796B;
+      font-size: 15px;
+    }
+    
+    .phase-info strong {
+      color: #00796B;
+      font-size: 16px;
+    }
+    
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      overflow-x: auto;
+      padding-bottom: 8px;
+      scrollbar-width: none;
+    }
+    
+    .tabs::-webkit-scrollbar {
+      display: none;
+    }
+    
+    .tab {
+      padding: 14px 28px;
+      background: white;
+      border: 2px solid #E0E0E0;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      white-space: nowrap;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+      font-size: 15px;
+      touch-action: manipulation;
+    }
+    
+    .tab:active {
+      transform: scale(0.97);
+    }
+    
+    .tab.active {
+      background: #00796B;
+      color: white;
+      border-color: #00796B;
+      box-shadow: 0 4px 8px rgba(0,121,107,0.3);
+    }
+    
+    .workout-card {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .workout-card h3 {
+      color: #00796B;
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 3px solid #E0F2F1;
+      font-size: 20px;
+      font-weight: 700;
+    }
+    
+    .exercise-row {
+      padding: 16px;
+      border-bottom: 1px solid #f0f0f0;
+      transition: background 0.2s;
+    }
+    
+    .exercise-row:last-child {
+      border-bottom: none;
+    }
+    
+    .exercise-row.superset {
+      background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
+      border-radius: 8px;
+      margin: 6px 0;
+      border-left: 4px solid #2196F3;
+    }
+    
+    .exercise-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+      gap: 12px;
+    }
+    
+    .exercise-info {
+      flex: 1;
+    }
+    
+    .exercise-name {
+      font-weight: 700;
+      color: #212121;
+      font-size: 16px;
+      margin-bottom: 4px;
+    }
+    
+    .exercise-category {
+      font-size: 13px;
+      color: #757575;
+      font-weight: 500;
+    }
+    
+    .exercise-sets {
+      font-size: 14px;
+      color: #00796B;
+      font-weight: 600;
+      white-space: nowrap;
+      background: #E0F2F1;
+      padding: 6px 12px;
+      border-radius: 6px;
+    }
+    
+    .weight-input-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
+    }
+    
+    .weight-input {
+      flex: 1;
+      padding: 14px;
+      border: 2px solid #E0E0E0;
+      border-radius: 8px;
+      font-size: 18px;
+      font-weight: 600;
+      text-align: center;
+      transition: all 0.3s;
+      background: #FAFAFA;
+    }
+    
+    .weight-input:focus {
+      outline: none;
+      border-color: #00796B;
+      background: white;
+      box-shadow: 0 0 0 3px rgba(0,121,107,0.1);
+    }
+    
+    .weight-unit {
+      font-weight: 600;
+      color: #757575;
+      font-size: 14px;
+    }
+    
+    .exercise-notes {
+      margin-top: 10px;
+      font-size: 13px;
+      color: #616161;
+      font-style: italic;
+      padding-left: 12px;
+      border-left: 3px solid #E0E0E0;
+    }
+    
+    .export-btn {
+      background: linear-gradient(135deg, #00796B 0%, #004D40 100%);
+      color: white;
+      padding: 16px 32px;
+      border: none;
+      border-radius: 10px;
+      font-size: 17px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,121,107,0.3);
+      transition: all 0.3s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      touch-action: manipulation;
+    }
+    
+    .export-btn:hover {
+      background: linear-gradient(135deg, #00695C 0%, #003d33 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0,121,107,0.4);
+    }
+    
+    .export-btn:active {
+      transform: translateY(0);
+    }
+    
+    .export-container {
+      text-align: center;
+      margin-top: 32px;
+      padding: 32px 24px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .export-container h3 {
+      color: #00796B;
+      margin-bottom: 16px;
+      font-size: 20px;
+    }
+    
+    .install-prompt {
+      background: linear-gradient(135deg, #FFF9C4 0%, #FFF59D 100%);
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      border-left: 5px solid #FBC02D;
+      display: none;
+      box-shadow: 0 2px 8px rgba(251,192,45,0.3);
+    }
+    
+    .install-prompt.show {
+      display: block;
+    }
+    
+    .install-prompt strong {
+      font-size: 18px;
+      display: block;
+      margin-bottom: 8px;
+    }
+    
+    .install-btn {
+      background: #FBC02D;
+      color: #333;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 12px;
+      font-size: 15px;
+      box-shadow: 0 2px 8px rgba(251,192,45,0.3);
+      transition: all 0.3s;
+      touch-action: manipulation;
+    }
+    
+    .install-btn:hover {
+      background: #F9A825;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(251,192,45,0.4);
+    }
+    
+    .stats-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    
+    .stat-card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    
+    .stat-value {
+      font-size: 32px;
+      font-weight: 700;
+      color: #00796B;
+      display: block;
+    }
+    
+    .stat-label {
+      font-size: 13px;
+      color: #757575;
+      margin-top: 4px;
+      font-weight: 500;
+    }
+    
+    @media (max-width: 768px) {
+      .header h1 {
+        font-size: 26px;
+      }
+      
+      .week-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+      
+      .tab {
+        padding: 12px 20px;
+        font-size: 14px;
+      }
+      
+      .exercise-header {
+        flex-direction: column;
+      }
+      
+      .exercise-sets {
+        align-self: flex-start;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .container {
+        padding: 12px;
+      }
+      
+      .header {
+        padding: 24px 16px;
+      }
+      
+      .week-selector, .workout-card {
+        padding: 16px;
+      }
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #757575;
+    }
+    
+    .loading-spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #00796B;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 16px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .success-message {
+      background: #C8E6C9;
+      color: #2E7D32;
+      padding: 12px 20px;
+      border-radius: 8px;
+      margin: 12px 0;
+      display: none;
+      border-left: 4px solid #4CAF50;
+      font-weight: 600;
+    }
+    
+    .success-message.show {
+      display: block;
+      animation: slideIn 0.3s ease;
+    }
+    
+    @keyframes slideIn {
+      from {
+        transform: translateY(-10px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="install-prompt" id="installPrompt">
+      <strong>📱 Install FitPal!</strong>
+      <p>Add to your home screen for quick access and offline use at the gym.</p>
+      <button class="install-btn" id="installBtn">Install App</button>
+    </div>
+    
+    <div class="success-message" id="successMessage">
+      ✓ Weight saved successfully!
+    </div>
+    
+    <div class="header">
+      <h1>💪 12-Week Fitness Plan</h1>
+      <p>Upper / Lower / Full Body Split</p>
+      <small>Inspired by Sober.Fitness • Weeks 42-53</small>
+    </div>
+    
+    <div class="stats-container">
+      <div class="stat-card">
+        <span class="stat-value" id="workoutsLogged">0</span>
+        <span class="stat-label">Workouts Logged</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value" id="currentWeekDisplay">W42</span>
+        <span class="stat-label">Current Week</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-value" id="totalSets">0</span>
+        <span class="stat-label">Total Sets</span>
+      </div>
+    </div>
+    
+    <div class="week-selector">
+      <h2>📅 Select Training Week</h2>
+      <div class="week-grid" id="weekGrid"></div>
+      <div class="phase-info" id="phaseInfo"></div>
+    </div>
+    
+    <div class="tabs" id="tabs">
+      <button class="tab active" data-day="upper">Day 1 - Upper</button>
+      <button class="tab" data-day="lower">Day 2 - Lower</button>
+      <button class="tab" data-day="full">Day 3 - Full Body</button>
+    </div>
+    
+    <div id="workoutContent"></div>
+    
+    <div class="export-container">
+      <h3>📊 Export Your Progress</h3>
+      <p style="color: #757575; margin-bottom: 16px;">Download all your workout data as CSV</p>
+      <button class="export-btn" id="exportBtn">
+        <span>📥</span>
+        <span>Export to CSV</span>
+      </button>
+    </div>
+  </div>
+  
+  <script>
+    // Configuration
+    const WEEKS = [42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53];
+    const PHASES = {
+      42: 'Foundation', 43: 'Foundation', 44: 'Foundation', 45: 'Foundation',
+      46: 'Strength', 47: 'Strength', 48: 'Strength', 49: 'Strength',
+      50: 'Peak', 51: 'Peak', 52: 'Peak', 53: 'Deload'
+    };
+    
+    const PHASE_DESCRIPTIONS = {
+      'Foundation': 'Focus on form. 4x8-10 means start at 8 reps, progress to 10 before adding weight.',
+      'Strength': 'Increase intensity. Add 5% more weight than previous phase. Rest 2-3 min between compounds.',
+      'Peak': 'Push performance. Add weight or reps each week. Consider drop sets on final set.',
+      'Deload': 'Reduce weight by 40-50%. Keep same exercises. Active recovery week.'
+    };
+    
+    const WORKOUTS = {
+      upper: [
+        {name: 'Incline Barbell Bench Press', category: 'Compound Push', sets: '4x8-10', notes: 'Upper chest focus'},
+        {name: 'Pull-Ups / Weighted', category: 'Compound Pull', sets: '4x6-10', notes: 'Superset 2a - Sober.fitness staple', superset: true},
+        {name: 'Bent-Over Barbell Row', category: 'Compound Pull', sets: '4x8-10', notes: 'Superset 2b', superset: true},
+        {name: 'Dips', category: 'Accessory Push', sets: '3x10-15', notes: 'Superset 3a - Sober.fitness daily', superset: true},
+        {name: 'Face Pulls', category: 'Accessory Pull', sets: '3x15-20', notes: 'Superset 3b - Rear delt health', superset: true},
+        {name: 'Barbell Curl', category: 'Arms', sets: '3x10-12', notes: 'Superset 4a', superset: true},
+        {name: 'Overhead Tricep Extension', category: 'Arms', sets: '3x10-12', notes: 'Superset 4b', superset: true},
+        {name: 'Dead Hangs', category: 'Mobility/Core', sets: '3x30-45s', notes: 'Sober.fitness staple - Shoulder health'}
+      ],
+      lower: [
+        {name: 'Back Squat', category: 'Compound Squat', sets: '4x8-10', notes: 'King of lower body'},
+        {name: 'Romanian Deadlift', category: 'Compound Hinge', sets: '4x8-10', notes: 'Hamstring focus'},
+        {name: 'Bulgarian Split Squat', category: 'Unilateral', sets: '3x10-12/leg', notes: 'Superset 2a - Balance & stability', superset: true},
+        {name: 'Lying Leg Curl', category: 'Posterior Chain', sets: '3x12-15', notes: 'Superset 2b', superset: true},
+        {name: 'Standing Calf Raise', category: 'Calves', sets: '4x15-20', notes: 'Superset 3a', superset: true},
+        {name: 'Hanging Leg Raises', category: 'Core', sets: '3x12-15', notes: 'Superset 3b - Sober.fitness daily', superset: true},
+        {name: 'Goblet Squat (KB)', category: 'Mobility', sets: '2x15', notes: 'Mobility work, light weight'}
+      ],
+      full: [
+        {name: 'Deadlift (Conv/Sumo)', category: 'Compound Hinge', sets: '4x5-8', notes: 'Full body power'},
+        {name: 'Overhead Press (Barbell)', category: 'Compound Push', sets: '4x8-10', notes: 'Superset 2a - Sober.fitness staple', superset: true},
+        {name: 'Lat Pulldown (Wide)', category: 'Compound Pull', sets: '3x10-12', notes: 'Superset 2b', superset: true},
+        {name: 'Goblet Squat (KB)', category: 'Lower Quad', sets: '3x12-15', notes: 'Superset 3a - Volume work', superset: true},
+        {name: 'Flat Dumbbell Press', category: 'Upper Push', sets: '3x10-12', notes: 'Superset 3b - Better stretch & activation', superset: true},
+        {name: 'Kettlebell Swings', category: 'Conditioning', sets: '4x15-20', notes: 'Power endurance'},
+        {name: 'Ab Wheel / Plank', category: 'Core', sets: '3x10-15 or 3x45s', notes: ''},
+        {name: 'Mobility Work', category: 'Mobility', sets: '2 rounds', notes: 'Hip flexor stretch & shoulder dislocates'}
+      ]
+    };
+    
+    // State
+    let currentWeek = parseInt(localStorage.getItem('currentWeek')) || 42;
+    let currentDay = localStorage.getItem('currentDay') || 'upper';
+    let db;
+    
+    // IndexedDB Setup
+    function initDB() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open('FitPalDB', 1);
+        
+        request.onerror = () => reject(request.error);
+        request.onsuccess = () => {
+          db = request.result;
+          resolve(db);
+        };
+        
+        request.onupgradeneeded = (event) => {
+          const db = event.target.result;
+          if (!db.objectStoreNames.contains('workouts')) {
+            db.createObjectStore('workouts', { keyPath: 'id' });
+          }
+        };
+      });
+    }
+    
+    // Save weight to IndexedDB
+    async function saveWeight(week, day, exercise, weight) {
+      const id = `${week}-${day}-${exercise}`;
+      const transaction = db.transaction(['workouts'], 'readwrite');
+      const store = transaction.objectStore('workouts');
+      store.put({ id, week, day, exercise, weight, timestamp: Date.now() });
+      
+      // Show success message
+      const successMsg = document.getElementById('successMessage');
+      successMsg.classList.add('show');
+      setTimeout(() => successMsg.classList.remove('show'), 2000);
+      
+      // Update stats
+      updateStats();
+    }
+    
+    // Load weight from IndexedDB
+    async function loadWeight(week, day, exercise) {
+      return new Promise((resolve) => {
+        const id = `${week}-${day}-${exercise}`;
+        const transaction = db.transaction(['workouts'], 'readonly');
+        const store = transaction.objectStore('workouts');
+        const request = store.get(id);
+        
+        request.onsuccess = () => {
+          resolve(request.result ? request.result.weight : '');
+        };
+        request.onerror = () => resolve('');
+      });
+    }
+    
+    // Load all data for export and stats
+    async function loadAllData() {
+      return new Promise((resolve) => {
+        const transaction = db.transaction(['workouts'], 'readonly');
+        const store = transaction.objectStore('workouts');
+        const request = store.getAll();
+        
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => resolve([]);
+      });
+    }
+    
+    // Update statistics
+    async function updateStats() {
+      const allData = await loadAllData();
+      
+      // Count unique workout sessions (unique week-day combinations)
+      const uniqueSessions = new Set(allData.map(d => `${d.week}-${d.day}`)).size;
+      document.getElementById('workoutsLogged').textContent = uniqueSessions;
+      
+      // Total sets (count of all logged weights)
+      document.getElementById('totalSets').textContent = allData.length;
+      
+      // Current week display
+      document.getElementById('currentWeekDisplay').textContent = `W${currentWeek}`;
+    }
+    
+    // Render week selector
+    function renderWeekSelector() {
+      const grid = document.getElementById('weekGrid');
+      grid.innerHTML = WEEKS.map(week => `
+        <button class="week-btn ${week === currentWeek ? 'active' : ''} ${week === 53 ? 'deload' : ''}" 
+                onclick="selectWeek(${week})">
+          W${week}
+          <small>${PHASES[week]}</small>
+        </button>
+      `).join('');
+      
+      updatePhaseInfo();
+    }
+    
+    function updatePhaseInfo() {
+      const info = document.getElementById('phaseInfo');
+      const phase = PHASES[currentWeek];
+      info.innerHTML = `<strong>Week ${currentWeek} - ${phase} Phase</strong><br>${PHASE_DESCRIPTIONS[phase]}`;
+    }
+    
+    function selectWeek(week) {
+      currentWeek = week;
+      localStorage.setItem('currentWeek', week);
+      renderWeekSelector();
+      renderWorkout();
+      updateStats();
+    }
+    
+    // Render tabs
+    function renderTabs() {
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.toggle('active', tab.dataset.day === currentDay);
+        tab.onclick = () => {
+          currentDay = tab.dataset.day;
+          localStorage.setItem('currentDay', currentDay);
+          renderTabs();
+          renderWorkout();
+        };
+      });
+    }
+    
+    // Render workout
+    async function renderWorkout() {
+      const content = document.getElementById('workoutContent');
+      const exercises = WORKOUTS[currentDay];
+      
+      const dayTitles = {
+        upper: 'Day 1 - Upper Body',
+        lower: 'Day 2 - Lower Body',
+        full: 'Day 3 - Full Body'
+      };
+      
+      let html = `<div class="workout-card"><h3>${dayTitles[currentDay]}</h3>`;
+      
+      for (const exercise of exercises) {
+        const weight = await loadWeight(currentWeek, currentDay, exercise.name);
+        html += `
+          <div class="exercise-row ${exercise.superset ? 'superset' : ''}">
+            <div class="exercise-header">
+              <div class="exercise-info">
+                <div class="exercise-name">${exercise.name}</div>
+                <div class="exercise-category">${exercise.category}</div>
+              </div>
+              <div class="exercise-sets">${exercise.sets}</div>
+            </div>
+            <div class="weight-input-container">
+              <input type="number" 
+                     class="weight-input" 
+                     placeholder="Enter weight"
+                     step="2.5"
+                     value="${weight}"
+                     onchange="handleWeightChange('${exercise.name.replace(/'/g, "\\'")}', this.value)"
+                     inputmode="decimal">
+              <span class="weight-unit">kg</span>
+            </div>
+            ${exercise.notes ? `<div class="exercise-notes">💡 ${exercise.notes}</div>` : ''}
+          </div>
+        `;
+      }
+      
+      html += '</div>';
+      content.innerHTML = html;
+    }
+    
+    async function handleWeightChange(exercise, weight) {
+      await saveWeight(currentWeek, currentDay, exercise, weight);
+    }
+    
+    // Export to CSV
+    async function exportData() {
+      const data = await loadAllData();
+      
+      if (data.length === 0) {
+        alert('No workout data to export yet. Start logging your workouts!');
+        return;
+      }
+      
+      const csv = [
+        'Week,Day,Exercise,Weight (kg),Date',
+        ...data.map(d => `W${d.week},${d.day},${d.exercise},${d.weight},${new Date(d.timestamp).toLocaleDateString()}`)
+      ].join('\n');
+      
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `fitpal-workout-data-${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      
+      alert('✓ Workout data exported successfully!');
+    }
+    
+    document.getElementById('exportBtn').onclick = exportData;
+    
+    // PWA Install
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      document.getElementById('installPrompt').classList.add('show');
+    });
+    
+    document.getElementById('installBtn').onclick = async () => {
+      if (deferredPrompt) {
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        deferredPrompt = null;
+        document.getElementById('installPrompt').classList.remove('show');
+        
+        if (outcome === 'accepted') {
+          console.log('App installed successfully');
+        }
+      }
+    };
+    
+    // Create PWA Manifest dynamically
+    const manifestData = {
+      name: "FitPal - Workout Tracker",
+      short_name: "FitPal",
+      start_url: "./",
+      display: "standalone",
+      background_color: "#ffffff",
+      theme_color: "#00796B",
+      orientation: "portrait",
+      icons: [
+        {
+          src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' fill='%2300796B' rx='24'/%3E%3Ctext x='50%25' y='50%25' font-size='100' text-anchor='middle' dy='.35em' fill='white' font-family='Arial, sans-serif'%3E💪%3C/text%3E%3C/svg%3E",
+          sizes: "192x192",
+          type: "image/svg+xml"
+        },
+        {
+          src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%2300796B' rx='64'/%3E%3Ctext x='50%25' y='50%25' font-size='280' text-anchor='middle' dy='.35em' fill='white' font-family='Arial, sans-serif'%3E💪%3C/text%3E%3C/svg%3E",
+          sizes: "512x512",
+          type: "image/svg+xml"
+        }
+      ]
+    };
+    
+    const manifestBlob = new Blob([JSON.stringify(manifestData)], { type: 'application/json' });
+    const manifestURL = URL.createObjectURL(manifestBlob);
+    document.getElementById('manifest-placeholder').setAttribute('href', manifestURL);
+    
+    // Service Worker for offline support
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register(
+        URL.createObjectURL(
+          new Blob([`
+            const CACHE_NAME = 'fitpal-v1';
+            
+            self.addEventListener('install', (event) => {
+              event.waitUntil(
+                caches.open(CACHE_NAME).then((cache) => {
+                  return cache.addAll(['./', './index.html']);
+                })
+              );
+            });
+            
+            self.addEventListener('fetch', (event) => {
+              event.respondWith(
+                caches.match(event.request).then((response) => {
+                  return response || fetch(event.request);
+                })
+              );
+            });
+            
+            self.addEventListener('activate', (event) => {
+              event.waitUntil(
+                caches.keys().then((cacheNames) => {
+                  return Promise.all(
+                    cacheNames.map((cacheName) => {
+                      if (cacheName !== CACHE_NAME) {
+                        return caches.delete(cacheName);
+                      }
+                    })
+                  );
+                })
+              );
+            });
+          `], { type: 'application/javascript' })
+        )
+      ).catch(() => {
+        console.log('Service Worker registration failed');
+      });
+    }
+    
+    // Initialize app
+    (async () => {
+      try {
+        await initDB();
+        renderWeekSelector();
+        renderTabs();
+        await renderWorkout();
+        await updateStats();
+      } catch (error) {
+        console.error('Initialization error:', error);
+        document.getElementById('workoutContent').innerHTML = `
+          <div class="loading">
+            <p>⚠️ Error loading app. Please refresh the page.</p>
+          </div>
+        `;
+      }
+    })();
+    
+    // Prevent zoom on input focus (better mobile UX)
+    document.addEventListener('touchstart', () => {}, { passive: true });
+  </script>
+</body>
+</html>
