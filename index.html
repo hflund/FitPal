@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#00796B">
-  <meta name="description" content="12-Week Workout Tracker - Weeks 42-53">
+  <meta name="description" content="12-Week Workout Tracker">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>Workout Tracker W42-W53</title>
+  <title>FitPal - Workout Tracker</title>
   
   <link rel="manifest" id="manifest-placeholder">
   
@@ -25,84 +25,143 @@
       color: #333;
       line-height: 1.6;
       padding-bottom: 20px;
+      font-size: 16px;
     }
     
     .container {
-      max-width: 1200px;
+      max-width: 600px;
       margin: 0 auto;
-      padding: 16px;
+      padding: 12px;
     }
     
     .header {
       background: linear-gradient(135deg, #00796B 0%, #004D40 100%);
       color: white;
-      padding: 32px 24px;
+      padding: 20px 16px;
       border-radius: 12px;
-      margin-bottom: 24px;
+      margin-bottom: 16px;
       box-shadow: 0 4px 12px rgba(0,121,107,0.3);
     }
     
     .header h1 {
-      font-size: 32px;
-      margin-bottom: 8px;
+      font-size: 22px;
+      margin-bottom: 6px;
       font-weight: 700;
     }
     
     .header p {
       opacity: 0.9;
-      font-size: 16px;
+      font-size: 14px;
     }
     
-    .header small {
+    .nav-tabs {
+      display: flex;
+      background: white;
+      border-radius: 10px;
+      padding: 6px;
+      margin-bottom: 16px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      gap: 6px;
+    }
+    
+    .nav-tab {
+      flex: 1;
+      padding: 12px 8px;
+      background: transparent;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.3s;
+      color: #757575;
+    }
+    
+    .nav-tab.active {
+      background: #00796B;
+      color: white;
+      box-shadow: 0 2px 6px rgba(0,121,107,0.3);
+    }
+    
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
       display: block;
-      margin-top: 8px;
-      opacity: 0.7;
-      font-size: 13px;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    
+    .stat-card {
+      background: white;
+      padding: 14px 10px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: #00796B;
+      display: block;
+      line-height: 1.2;
+    }
+    
+    .stat-label {
+      font-size: 11px;
+      color: #757575;
+      margin-top: 4px;
+      font-weight: 500;
     }
     
     .week-selector {
       background: white;
-      padding: 24px;
+      padding: 16px;
       border-radius: 12px;
-      margin-bottom: 24px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      margin-bottom: 16px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
     
     .week-selector h2 {
       color: #00796B;
-      margin-bottom: 20px;
-      font-size: 22px;
+      margin-bottom: 12px;
+      font-size: 18px;
       font-weight: 600;
     }
     
     .week-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(85px, 1fr));
-      gap: 12px;
-      margin-bottom: 20px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 12px;
     }
     
     .week-btn {
-      padding: 18px 12px;
+      padding: 12px 6px;
       border: 2px solid #00796B;
-      border-radius: 10px;
+      border-radius: 8px;
       background: white;
       cursor: pointer;
       font-weight: 600;
       text-align: center;
       transition: all 0.3s ease;
-      font-size: 16px;
+      font-size: 13px;
       touch-action: manipulation;
+      min-height: 60px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
     
     .week-btn:active {
       transform: scale(0.95);
-    }
-    
-    .week-btn:hover {
-      background: #E0F2F1;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0,121,107,0.2);
     }
     
     .week-btn.active {
@@ -123,84 +182,47 @@
     
     .week-btn small {
       display: block;
-      font-size: 11px;
-      margin-top: 6px;
+      font-size: 10px;
+      margin-top: 4px;
       opacity: 0.85;
       font-weight: 500;
     }
     
     .phase-info {
-      padding: 18px;
+      padding: 14px;
       background: linear-gradient(135deg, #E0F2F1 0%, #B2DFDB 100%);
-      border-radius: 10px;
-      border-left: 5px solid #00796B;
-      font-size: 15px;
+      border-radius: 8px;
+      border-left: 4px solid #00796B;
+      font-size: 13px;
+      line-height: 1.5;
     }
     
     .phase-info strong {
       color: #00796B;
-      font-size: 16px;
+      font-size: 14px;
     }
     
-    .tabs {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-      overflow-x: auto;
-      padding-bottom: 8px;
-      scrollbar-width: none;
-    }
-    
-    .tabs::-webkit-scrollbar {
-      display: none;
-    }
-    
-    .tab {
-      padding: 14px 28px;
-      background: white;
-      border: 2px solid #E0E0E0;
-      border-radius: 10px;
-      cursor: pointer;
-      font-weight: 600;
-      white-space: nowrap;
-      transition: all 0.3s ease;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.08);
-      font-size: 15px;
-      touch-action: manipulation;
-    }
-    
-    .tab:active {
-      transform: scale(0.97);
-    }
-    
-    .tab.active {
-      background: #00796B;
-      color: white;
-      border-color: #00796B;
-      box-shadow: 0 4px 8px rgba(0,121,107,0.3);
-    }
-    
-    .workout-card {
+    .workout-section {
       background: white;
       border-radius: 12px;
-      padding: 24px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      padding: 16px;
+      margin-bottom: 14px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     }
     
-    .workout-card h3 {
-      color: #00796B;
-      margin-bottom: 20px;
-      padding-bottom: 16px;
-      border-bottom: 3px solid #E0F2F1;
-      font-size: 20px;
+    .day-header {
+      background: #00796B;
+      color: white;
+      padding: 10px 14px;
+      border-radius: 8px;
+      margin-bottom: 14px;
+      font-size: 16px;
       font-weight: 700;
     }
     
     .exercise-row {
-      padding: 16px;
+      padding: 12px;
       border-bottom: 1px solid #f0f0f0;
-      transition: background 0.2s;
     }
     
     .exercise-row:last-child {
@@ -209,7 +231,7 @@
     
     .exercise-row.superset {
       background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
-      border-radius: 8px;
+      border-radius: 6px;
       margin: 6px 0;
       border-left: 4px solid #2196F3;
     }
@@ -218,8 +240,8 @@
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      margin-bottom: 12px;
-      gap: 12px;
+      margin-bottom: 10px;
+      gap: 8px;
     }
     
     .exercise-info {
@@ -229,23 +251,24 @@
     .exercise-name {
       font-weight: 700;
       color: #212121;
-      font-size: 16px;
-      margin-bottom: 4px;
+      font-size: 14px;
+      margin-bottom: 3px;
+      line-height: 1.3;
     }
     
     .exercise-category {
-      font-size: 13px;
+      font-size: 11px;
       color: #757575;
       font-weight: 500;
     }
     
     .exercise-sets {
-      font-size: 14px;
+      font-size: 12px;
       color: #00796B;
       font-weight: 600;
       white-space: nowrap;
       background: #E0F2F1;
-      padding: 6px 12px;
+      padding: 4px 8px;
       border-radius: 6px;
     }
     
@@ -253,15 +276,14 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      margin-top: 8px;
     }
     
     .weight-input {
-      flex: 1;
-      padding: 14px;
+      width: 85px;
+      padding: 12px 8px;
       border: 2px solid #E0E0E0;
       border-radius: 8px;
-      font-size: 18px;
+      font-size: 16px;
       font-weight: 600;
       text-align: center;
       transition: all 0.3s;
@@ -282,64 +304,156 @@
     }
     
     .exercise-notes {
-      margin-top: 10px;
-      font-size: 13px;
+      margin-top: 8px;
+      font-size: 11px;
       color: #616161;
       font-style: italic;
-      padding-left: 12px;
+      padding-left: 8px;
       border-left: 3px solid #E0E0E0;
+      line-height: 1.4;
     }
     
-    .export-btn {
+    .guidelines-section {
+      background: white;
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 14px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    
+    .guidelines-section h3 {
+      color: #00796B;
+      margin-bottom: 14px;
+      font-size: 17px;
+      font-weight: 700;
+      padding-bottom: 8px;
+      border-bottom: 3px solid #E0F2F1;
+    }
+    
+    .guideline-card {
+      padding: 14px;
+      background: #F5F5F5;
+      border-radius: 8px;
+      border-left: 4px solid #00796B;
+      margin-bottom: 12px;
+    }
+    
+    .guideline-card:last-child {
+      margin-bottom: 0;
+    }
+    
+    .guideline-card h4 {
+      color: #00796B;
+      font-size: 14px;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+    
+    .guideline-card ul {
+      list-style: none;
+      padding: 0;
+    }
+    
+    .guideline-card li {
+      font-size: 12px;
+      color: #555;
+      padding: 3px 0;
+      padding-left: 14px;
+      position: relative;
+      line-height: 1.5;
+    }
+    
+    .guideline-card li:before {
+      content: "•";
+      position: absolute;
+      left: 0;
+      color: #00796B;
+      font-weight: bold;
+    }
+    
+    .chart-container {
+      background: white;
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 14px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    
+    .chart-container h3 {
+      color: #00796B;
+      margin-bottom: 14px;
+      font-size: 17px;
+      font-weight: 700;
+    }
+    
+    .chart-canvas {
+      width: 100%;
+      height: 250px;
+      background: #FAFAFA;
+      border-radius: 8px;
+      padding: 10px;
+      position: relative;
+    }
+    
+    .no-data-message {
+      text-align: center;
+      padding: 40px 20px;
+      color: #757575;
+      font-size: 14px;
+    }
+    
+    .export-btn, .restart-btn {
       background: linear-gradient(135deg, #00796B 0%, #004D40 100%);
       color: white;
-      padding: 16px 32px;
+      padding: 14px 24px;
       border: none;
-      border-radius: 10px;
-      font-size: 17px;
+      border-radius: 8px;
+      font-size: 15px;
       font-weight: 700;
       cursor: pointer;
       box-shadow: 0 4px 12px rgba(0,121,107,0.3);
       transition: all 0.3s ease;
-      display: inline-flex;
+      display: flex;
       align-items: center;
-      gap: 12px;
+      justify-content: center;
+      gap: 8px;
       touch-action: manipulation;
+      width: 100%;
+      margin-bottom: 10px;
     }
     
-    .export-btn:hover {
-      background: linear-gradient(135deg, #00695C 0%, #003d33 100%);
-      transform: translateY(-2px);
-      box-shadow: 0 6px 16px rgba(0,121,107,0.4);
+    .restart-btn {
+      background: linear-gradient(135deg, #F4511E 0%, #D84315 100%);
+      box-shadow: 0 4px 12px rgba(244,81,30,0.3);
     }
     
-    .export-btn:active {
-      transform: translateY(0);
+    .export-btn:active, .restart-btn:active {
+      transform: scale(0.98);
     }
     
-    .export-container {
-      text-align: center;
-      margin-top: 32px;
-      padding: 32px 24px;
+    .action-container {
+      padding: 18px;
       background: white;
       border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      margin-bottom: 14px;
     }
     
-    .export-container h3 {
+    .action-container h3 {
       color: #00796B;
-      margin-bottom: 16px;
-      font-size: 20px;
+      margin-bottom: 12px;
+      font-size: 17px;
+      text-align: center;
     }
     
     .install-prompt {
       background: linear-gradient(135deg, #FFF9C4 0%, #FFF59D 100%);
-      padding: 20px;
+      padding: 14px;
       border-radius: 10px;
-      margin-bottom: 20px;
+      margin-bottom: 14px;
       border-left: 5px solid #FBC02D;
       display: none;
-      box-shadow: 0 2px 8px rgba(251,192,45,0.3);
+      box-shadow: 0 2px 6px rgba(251,192,45,0.3);
     }
     
     .install-prompt.show {
@@ -347,128 +461,38 @@
     }
     
     .install-prompt strong {
-      font-size: 18px;
+      font-size: 15px;
       display: block;
-      margin-bottom: 8px;
+      margin-bottom: 6px;
+    }
+    
+    .install-prompt p {
+      font-size: 13px;
     }
     
     .install-btn {
       background: #FBC02D;
       color: #333;
-      padding: 12px 24px;
+      padding: 10px 20px;
       border: none;
       border-radius: 8px;
       font-weight: 700;
       cursor: pointer;
-      margin-top: 12px;
-      font-size: 15px;
-      box-shadow: 0 2px 8px rgba(251,192,45,0.3);
-      transition: all 0.3s;
-      touch-action: manipulation;
-    }
-    
-    .install-btn:hover {
-      background: #F9A825;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(251,192,45,0.4);
-    }
-    
-    .stats-container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-    
-    .stat-card {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      text-align: center;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-    }
-    
-    .stat-value {
-      font-size: 32px;
-      font-weight: 700;
-      color: #00796B;
-      display: block;
-    }
-    
-    .stat-label {
-      font-size: 13px;
-      color: #757575;
-      margin-top: 4px;
-      font-weight: 500;
-    }
-    
-    @media (max-width: 768px) {
-      .header h1 {
-        font-size: 26px;
-      }
-      
-      .week-grid {
-        grid-template-columns: repeat(4, 1fr);
-      }
-      
-      .tab {
-        padding: 12px 20px;
-        font-size: 14px;
-      }
-      
-      .exercise-header {
-        flex-direction: column;
-      }
-      
-      .exercise-sets {
-        align-self: flex-start;
-      }
-    }
-    
-    @media (max-width: 480px) {
-      .container {
-        padding: 12px;
-      }
-      
-      .header {
-        padding: 24px 16px;
-      }
-      
-      .week-selector, .workout-card {
-        padding: 16px;
-      }
-    }
-    
-    .loading {
-      text-align: center;
-      padding: 40px;
-      color: #757575;
-    }
-    
-    .loading-spinner {
-      border: 3px solid #f3f3f3;
-      border-top: 3px solid #00796B;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      animation: spin 1s linear infinite;
-      margin: 0 auto 16px;
-    }
-    
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+      margin-top: 10px;
+      font-size: 14px;
+      width: 100%;
     }
     
     .success-message {
       background: #C8E6C9;
       color: #2E7D32;
-      padding: 12px 20px;
-      border-radius: 8px;
+      padding: 10px 14px;
+      border-radius: 6px;
       margin: 12px 0;
       display: none;
       border-left: 4px solid #4CAF50;
       font-weight: 600;
+      font-size: 13px;
     }
     
     .success-message.show {
@@ -486,122 +510,237 @@
         opacity: 1;
       }
     }
+    
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: #E0E0E0;
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 10px 0;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #00796B 0%, #4CAF50 100%);
+      transition: width 0.3s ease;
+    }
+    
+    .cycle-info {
+      background: #E8F5E9;
+      padding: 12px;
+      border-radius: 8px;
+      margin-bottom: 14px;
+      border-left: 4px solid #4CAF50;
+      font-size: 13px;
+    }
+    
+    .cycle-info strong {
+      color: #2E7D32;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="install-prompt" id="installPrompt">
       <strong>📱 Install FitPal!</strong>
-      <p>Add to your home screen for quick access and offline use at the gym.</p>
+      <p>Add to your home screen for offline gym use.</p>
       <button class="install-btn" id="installBtn">Install App</button>
     </div>
     
     <div class="success-message" id="successMessage">
-      ✓ Weight saved successfully!
+      ✓ Weight saved!
     </div>
     
     <div class="header">
-      <h1>💪 12-Week Fitness Plan</h1>
-      <p>Upper / Lower / Full Body Split</p>
-      <small>Inspired by Sober.Fitness • Weeks 42-53</small>
+      <h1>💪 FitPal Tracker</h1>
+      <p>12-Week Training Program</p>
     </div>
     
-    <div class="stats-container">
-      <div class="stat-card">
-        <span class="stat-value" id="workoutsLogged">0</span>
-        <span class="stat-label">Workouts Logged</span>
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="switchTab('workout')">Workout</button>
+      <button class="nav-tab" onclick="switchTab('progress')">Progress</button>
+      <button class="nav-tab" onclick="switchTab('settings')">Settings</button>
+    </div>
+    
+    <!-- WORKOUT TAB -->
+    <div id="workout-tab" class="tab-content active">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-value" id="workoutsLogged">0</span>
+          <span class="stat-label">Workouts</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="currentWeekDisplay">W42</span>
+          <span class="stat-label">Current</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="totalSets">0</span>
+          <span class="stat-label">Total Sets</span>
+        </div>
       </div>
-      <div class="stat-card">
-        <span class="stat-value" id="currentWeekDisplay">W42</span>
-        <span class="stat-label">Current Week</span>
+      
+      <div class="cycle-info" id="cycleInfo"></div>
+      
+      <div class="week-selector">
+        <h2>📅 Select Week</h2>
+        <div class="week-grid" id="weekGrid"></div>
+        <div class="phase-info" id="phaseInfo"></div>
       </div>
-      <div class="stat-card">
-        <span class="stat-value" id="totalSets">0</span>
-        <span class="stat-label">Total Sets</span>
+      
+      <div id="workoutContent"></div>
+      
+      <div class="guidelines-section">
+        <h3>📚 Training Guidelines</h3>
+        <div class="guideline-card">
+          <h4>Superset Strategy</h4>
+          <ul>
+            <li>Exercises marked 2a/2b are supersets</li>
+            <li>Do set of 'a', rest 30s, do 'b', rest 60-90s</li>
+            <li>Pairs non-competing muscle groups</li>
+          </ul>
+        </div>
+        
+        <div class="guideline-card">
+          <h4>Progression</h4>
+          <ul>
+            <li>Add weight when completing all sets at top range</li>
+            <li>Compounds: +2.5-5kg increases</li>
+            <li>Accessories: +1.25-2.5kg increases</li>
+          </ul>
+        </div>
+        
+        <div class="guideline-card">
+          <h4>Rest Periods</h4>
+          <ul>
+            <li>Compounds: 2-3 minutes</li>
+            <li>Accessories: 60-90 seconds</li>
+            <li>Supersets: 30s / 60-90s between rounds</li>
+          </ul>
+        </div>
       </div>
     </div>
     
-    <div class="week-selector">
-      <h2>📅 Select Training Week</h2>
-      <div class="week-grid" id="weekGrid"></div>
-      <div class="phase-info" id="phaseInfo"></div>
+    <!-- PROGRESS TAB -->
+    <div id="progress-tab" class="tab-content">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-value" id="totalCycles">0</span>
+          <span class="stat-label">Cycles</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="totalWeeks">0</span>
+          <span class="stat-label">Weeks</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-value" id="totalWorkouts">0</span>
+          <span class="stat-label">Sessions</span>
+        </div>
+      </div>
+      
+      <div class="chart-container">
+        <h3>📈 Progress Over Time</h3>
+        <div id="chartContent"></div>
+      </div>
+      
+      <div class="chart-container">
+        <h3>🏋️ Exercise Progress</h3>
+        <div id="exerciseProgressContent"></div>
+      </div>
     </div>
     
-    <div class="tabs" id="tabs">
-      <button class="tab active" data-day="upper">Day 1 - Upper</button>
-      <button class="tab" data-day="lower">Day 2 - Lower</button>
-      <button class="tab" data-day="full">Day 3 - Full Body</button>
-    </div>
-    
-    <div id="workoutContent"></div>
-    
-    <div class="export-container">
-      <h3>📊 Export Your Progress</h3>
-      <p style="color: #757575; margin-bottom: 16px;">Download all your workout data as CSV</p>
-      <button class="export-btn" id="exportBtn">
-        <span>📥</span>
-        <span>Export to CSV</span>
-      </button>
+    <!-- SETTINGS TAB -->
+    <div id="settings-tab" class="tab-content">
+      <div class="action-container">
+        <h3>💾 Backup & Export</h3>
+        <button class="export-btn" id="exportBtn">
+          <span>📥</span>
+          <span>Export to CSV</span>
+        </button>
+      </div>
+      
+      <div class="action-container">
+        <h3>🔄 Start New Cycle</h3>
+        <p style="text-align: center; color: #757575; font-size: 13px; margin-bottom: 12px;">
+          Complete current cycle and start fresh. Progress data will be preserved.
+        </p>
+        <button class="restart-btn" id="restartBtn">
+          <span>🔄</span>
+          <span>Start New 12-Week Cycle</span>
+        </button>
+      </div>
+      
+      <div class="guidelines-section">
+        <h3>ℹ️ About FitPal</h3>
+        <p style="font-size: 13px; line-height: 1.6; color: #555;">
+          <strong>12-Week Training Program</strong><br>
+          Upper / Lower / Full Body Split designed for general fitness and strength development.
+          <br><br>
+          <strong>Data Storage:</strong> All workout data is stored locally on your device using IndexedDB. Export regularly for backup.
+          <br><br>
+          <strong>Cycles:</strong> Complete 12 weeks, then start a new cycle to track long-term progress.
+        </p>
+      </div>
     </div>
   </div>
   
   <script>
     // Configuration
-    const WEEKS = [42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 53];
+    const WEEKS = [42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 1];
     const PHASES = {
       42: 'Foundation', 43: 'Foundation', 44: 'Foundation', 45: 'Foundation',
       46: 'Strength', 47: 'Strength', 48: 'Strength', 49: 'Strength',
-      50: 'Peak', 51: 'Peak', 52: 'Peak', 53: 'Deload'
+      50: 'Peak', 51: 'Peak', 52: 'Peak', 1: 'Deload'
     };
     
     const PHASE_DESCRIPTIONS = {
-      'Foundation': 'Focus on form. 4x8-10 means start at 8 reps, progress to 10 before adding weight.',
-      'Strength': 'Increase intensity. Add 5% more weight than previous phase. Rest 2-3 min between compounds.',
-      'Peak': 'Push performance. Add weight or reps each week. Consider drop sets on final set.',
-      'Deload': 'Reduce weight by 40-50%. Keep same exercises. Active recovery week.'
+      'Foundation': 'Focus on form. Start at 8 reps, progress to 10 before adding weight.',
+      'Strength': 'Increase intensity. Add 5% more weight than Week 45. Rest 2-3 min between compounds.',
+      'Peak': 'Push performance. Add weight or reps each week. Maintain strict form.',
+      'Deload': 'Reduce weight by 40-50%. Active recovery week. Prep for next cycle.'
     };
     
     const WORKOUTS = {
       upper: [
         {name: 'Incline Barbell Bench Press', category: 'Compound Push', sets: '4x8-10', notes: 'Upper chest focus'},
-        {name: 'Pull-Ups / Weighted', category: 'Compound Pull', sets: '4x6-10', notes: 'Superset 2a - Sober.fitness staple', superset: true},
+        {name: 'Pull-Ups / Weighted', category: 'Compound Pull', sets: '4x6-10', notes: 'Superset 2a', superset: true},
         {name: 'Bent-Over Barbell Row', category: 'Compound Pull', sets: '4x8-10', notes: 'Superset 2b', superset: true},
-        {name: 'Dips', category: 'Accessory Push', sets: '3x10-15', notes: 'Superset 3a - Sober.fitness daily', superset: true},
-        {name: 'Face Pulls', category: 'Accessory Pull', sets: '3x15-20', notes: 'Superset 3b - Rear delt health', superset: true},
+        {name: 'Dips', category: 'Accessory Push', sets: '3x10-15', notes: 'Superset 3a', superset: true},
+        {name: 'Face Pulls', category: 'Accessory Pull', sets: '3x15-20', notes: 'Superset 3b', superset: true},
         {name: 'Barbell Curl', category: 'Arms', sets: '3x10-12', notes: 'Superset 4a', superset: true},
         {name: 'Overhead Tricep Extension', category: 'Arms', sets: '3x10-12', notes: 'Superset 4b', superset: true},
-        {name: 'Dead Hangs', category: 'Mobility/Core', sets: '3x30-45s', notes: 'Sober.fitness staple - Shoulder health'}
+        {name: 'Dead Hangs', category: 'Mobility', sets: '3x30-45s', notes: 'Shoulder health'}
       ],
       lower: [
         {name: 'Back Squat', category: 'Compound Squat', sets: '4x8-10', notes: 'King of lower body'},
         {name: 'Romanian Deadlift', category: 'Compound Hinge', sets: '4x8-10', notes: 'Hamstring focus'},
-        {name: 'Bulgarian Split Squat', category: 'Unilateral', sets: '3x10-12/leg', notes: 'Superset 2a - Balance & stability', superset: true},
+        {name: 'Bulgarian Split Squat', category: 'Unilateral', sets: '3x10-12/leg', notes: 'Superset 2a', superset: true},
         {name: 'Lying Leg Curl', category: 'Posterior Chain', sets: '3x12-15', notes: 'Superset 2b', superset: true},
         {name: 'Standing Calf Raise', category: 'Calves', sets: '4x15-20', notes: 'Superset 3a', superset: true},
-        {name: 'Hanging Leg Raises', category: 'Core', sets: '3x12-15', notes: 'Superset 3b - Sober.fitness daily', superset: true},
-        {name: 'Goblet Squat (KB)', category: 'Mobility', sets: '2x15', notes: 'Mobility work, light weight'}
+        {name: 'Hanging Leg Raises', category: 'Core', sets: '3x12-15', notes: 'Superset 3b', superset: true},
+        {name: 'Goblet Squat (KB)', category: 'Mobility', sets: '2x15', notes: 'Light weight'}
       ],
       full: [
         {name: 'Deadlift (Conv/Sumo)', category: 'Compound Hinge', sets: '4x5-8', notes: 'Full body power'},
-        {name: 'Overhead Press (Barbell)', category: 'Compound Push', sets: '4x8-10', notes: 'Superset 2a - Sober.fitness staple', superset: true},
+        {name: 'Overhead Press (Barbell)', category: 'Compound Push', sets: '4x8-10', notes: 'Superset 2a', superset: true},
         {name: 'Lat Pulldown (Wide)', category: 'Compound Pull', sets: '3x10-12', notes: 'Superset 2b', superset: true},
-        {name: 'Goblet Squat (KB)', category: 'Lower Quad', sets: '3x12-15', notes: 'Superset 3a - Volume work', superset: true},
-        {name: 'Flat Dumbbell Press', category: 'Upper Push', sets: '3x10-12', notes: 'Superset 3b - Better stretch & activation', superset: true},
+        {name: 'Goblet Squat (KB)', category: 'Lower Quad', sets: '3x12-15', notes: 'Superset 3a', superset: true},
+        {name: 'Flat Dumbbell Press', category: 'Upper Push', sets: '3x10-12', notes: 'Superset 3b - Better stretch', superset: true},
         {name: 'Kettlebell Swings', category: 'Conditioning', sets: '4x15-20', notes: 'Power endurance'},
         {name: 'Ab Wheel / Plank', category: 'Core', sets: '3x10-15 or 3x45s', notes: ''},
-        {name: 'Mobility Work', category: 'Mobility', sets: '2 rounds', notes: 'Hip flexor stretch & shoulder dislocates'}
+        {name: 'Mobility Work', category: 'Mobility', sets: '2 rounds', notes: 'Hip flexor + shoulders'}
       ]
     };
     
     // State
     let currentWeek = parseInt(localStorage.getItem('currentWeek')) || 42;
-    let currentDay = localStorage.getItem('currentDay') || 'upper';
+    let currentCycle = parseInt(localStorage.getItem('currentCycle')) || 1;
     let db;
     
     // IndexedDB Setup
     function initDB() {
       return new Promise((resolve, reject) => {
-        const request = indexedDB.open('FitPalDB', 1);
+        const request = indexedDB.open('FitPalDB', 2);
         
         request.onerror = () => reject(request.error);
         request.onsuccess = () => {
@@ -618,26 +757,24 @@
       });
     }
     
-    // Save weight to IndexedDB
+    // Save weight
     async function saveWeight(week, day, exercise, weight) {
-      const id = `${week}-${day}-${exercise}`;
+      const id = `${currentCycle}-${week}-${day}-${exercise}`;
       const transaction = db.transaction(['workouts'], 'readwrite');
       const store = transaction.objectStore('workouts');
-      store.put({ id, week, day, exercise, weight, timestamp: Date.now() });
+      store.put({ id, cycle: currentCycle, week, day, exercise, weight, timestamp: Date.now() });
       
-      // Show success message
       const successMsg = document.getElementById('successMessage');
       successMsg.classList.add('show');
-      setTimeout(() => successMsg.classList.remove('show'), 2000);
+      setTimeout(() => successMsg.classList.remove('show'), 1500);
       
-      // Update stats
       updateStats();
     }
     
-    // Load weight from IndexedDB
+    // Load weight
     async function loadWeight(week, day, exercise) {
       return new Promise((resolve) => {
-        const id = `${week}-${day}-${exercise}`;
+        const id = `${currentCycle}-${week}-${day}-${exercise}`;
         const transaction = db.transaction(['workouts'], 'readonly');
         const store = transaction.objectStore('workouts');
         const request = store.get(id);
@@ -649,7 +786,7 @@
       });
     }
     
-    // Load all data for export and stats
+    // Load all data
     async function loadAllData() {
       return new Promise((resolve) => {
         const transaction = db.transaction(['workouts'], 'readonly');
@@ -661,26 +798,58 @@
       });
     }
     
-    // Update statistics
+    // Update stats
     async function updateStats() {
       const allData = await loadAllData();
+      const currentCycleData = allData.filter(d => d.cycle === currentCycle);
       
-      // Count unique workout sessions (unique week-day combinations)
-      const uniqueSessions = new Set(allData.map(d => `${d.week}-${d.day}`)).size;
+      const uniqueSessions = new Set(currentCycleData.map(d => `${d.week}-${d.day}`)).size;
       document.getElementById('workoutsLogged').textContent = uniqueSessions;
-      
-      // Total sets (count of all logged weights)
-      document.getElementById('totalSets').textContent = allData.length;
-      
-      // Current week display
+      document.getElementById('totalSets').textContent = currentCycleData.length;
       document.getElementById('currentWeekDisplay').textContent = `W${currentWeek}`;
+      
+      // Progress tab stats
+      const uniqueCycles = new Set(allData.map(d => d.cycle)).size;
+      const uniqueWeeks = new Set(allData.map(d => `${d.cycle}-${d.week}`)).size;
+      const totalWorkouts = new Set(allData.map(d => `${d.cycle}-${d.week}-${d.day}`)).size;
+      
+      document.getElementById('totalCycles').textContent = uniqueCycles;
+      document.getElementById('totalWeeks').textContent = uniqueWeeks;
+      document.getElementById('totalWorkouts').textContent = totalWorkouts;
+      
+      // Update cycle info
+      updateCycleInfo();
+    }
+    
+    function updateCycleInfo() {
+      const cycleInfo = document.getElementById('cycleInfo');
+      const progress = ((WEEKS.indexOf(currentWeek) + 1) / 12 * 100).toFixed(0);
+      cycleInfo.innerHTML = `
+        <strong>Cycle ${currentCycle}</strong> - Week ${currentWeek} of 12
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: ${progress}%"></div>
+        </div>
+      `;
+    }
+    
+    // Switch tabs
+    function switchTab(tab) {
+      document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      
+      event.target.classList.add('active');
+      document.getElementById(`${tab}-tab`).classList.add('active');
+      
+      if (tab === 'progress') {
+        renderProgressCharts();
+      }
     }
     
     // Render week selector
     function renderWeekSelector() {
       const grid = document.getElementById('weekGrid');
       grid.innerHTML = WEEKS.map(week => `
-        <button class="week-btn ${week === currentWeek ? 'active' : ''} ${week === 53 ? 'deload' : ''}" 
+        <button class="week-btn ${week === currentWeek ? 'active' : ''} ${week === 1 ? 'deload' : ''}" 
                 onclick="selectWeek(${week})">
           W${week}
           <small>${PHASES[week]}</small>
@@ -700,27 +869,14 @@
       currentWeek = week;
       localStorage.setItem('currentWeek', week);
       renderWeekSelector();
-      renderWorkout();
+      renderAllWorkouts();
       updateStats();
+      window.scrollTo(0, 0);
     }
     
-    // Render tabs
-    function renderTabs() {
-      document.querySelectorAll('.tab').forEach(tab => {
-        tab.classList.toggle('active', tab.dataset.day === currentDay);
-        tab.onclick = () => {
-          currentDay = tab.dataset.day;
-          localStorage.setItem('currentDay', currentDay);
-          renderTabs();
-          renderWorkout();
-        };
-      });
-    }
-    
-    // Render workout
-    async function renderWorkout() {
+    // Render all workouts
+    async function renderAllWorkouts() {
       const content = document.getElementById('workoutContent');
-      const exercises = WORKOUTS[currentDay];
       
       const dayTitles = {
         upper: 'Day 1 - Upper Body',
@@ -728,40 +884,158 @@
         full: 'Day 3 - Full Body'
       };
       
-      let html = `<div class="workout-card"><h3>${dayTitles[currentDay]}</h3>`;
+      let html = '';
       
-      for (const exercise of exercises) {
-        const weight = await loadWeight(currentWeek, currentDay, exercise.name);
-        html += `
-          <div class="exercise-row ${exercise.superset ? 'superset' : ''}">
-            <div class="exercise-header">
-              <div class="exercise-info">
-                <div class="exercise-name">${exercise.name}</div>
-                <div class="exercise-category">${exercise.category}</div>
+      for (const [day, exercises] of Object.entries(WORKOUTS)) {
+        html += `<div class="workout-section">`;
+        html += `<div class="day-header">${dayTitles[day]}</div>`;
+        
+        for (const exercise of exercises) {
+          const weight = await loadWeight(currentWeek, day, exercise.name);
+          html += `
+            <div class="exercise-row ${exercise.superset ? 'superset' : ''}">
+              <div class="exercise-header">
+                <div class="exercise-info">
+                  <div class="exercise-name">${exercise.name}</div>
+                  <div class="exercise-category">${exercise.category}</div>
+                </div>
+                <div class="exercise-sets">${exercise.sets}</div>
               </div>
-              <div class="exercise-sets">${exercise.sets}</div>
+              <div class="weight-input-container">
+                <input type="number" 
+                       class="weight-input" 
+                       placeholder="0.0"
+                       step="2.5"
+                       value="${weight}"
+                       onchange="handleWeightChange('${day}', '${exercise.name.replace(/'/g, "\\'")}', this.value)"
+                       inputmode="decimal">
+                <span class="weight-unit">kg</span>
+              </div>
+              ${exercise.notes ? `<div class="exercise-notes">💡 ${exercise.notes}</div>` : ''}
             </div>
-            <div class="weight-input-container">
-              <input type="number" 
-                     class="weight-input" 
-                     placeholder="Enter weight"
-                     step="2.5"
-                     value="${weight}"
-                     onchange="handleWeightChange('${exercise.name.replace(/'/g, "\\'")}', this.value)"
-                     inputmode="decimal">
-              <span class="weight-unit">kg</span>
-            </div>
-            ${exercise.notes ? `<div class="exercise-notes">💡 ${exercise.notes}</div>` : ''}
-          </div>
-        `;
+          `;
+        }
+        
+        html += '</div>';
       }
       
-      html += '</div>';
       content.innerHTML = html;
     }
     
-    async function handleWeightChange(exercise, weight) {
-      await saveWeight(currentWeek, currentDay, exercise, weight);
+    async function handleWeightChange(day, exercise, weight) {
+      await saveWeight(currentWeek, day, exercise, weight);
+    }
+    
+    // Render progress charts
+    async function renderProgressCharts() {
+      const allData = await loadAllData();
+      
+      if (allData.length === 0) {
+        document.getElementById('chartContent').innerHTML = `
+          <div class="no-data-message">
+            No workout data yet. Start logging to see your progress!
+          </div>
+        `;
+        document.getElementById('exerciseProgressContent').innerHTML = `
+          <div class="no-data-message">
+            Exercise progress will appear here once you log workouts.
+          </div>
+        `;
+        return;
+      }
+      
+      // Overall progress chart
+      renderOverallProgress(allData);
+      
+      // Exercise-specific progress
+      renderExerciseProgress(allData);
+    }
+    
+    function renderOverallProgress(allData) {
+      // Group by cycle and week
+      const weeklyData = {};
+      allData.forEach(d => {
+        const key = `C${d.cycle}-W${d.week}`;
+        if (!weeklyData[key]) {
+          weeklyData[key] = { count: 0, totalWeight: 0, exercises: new Set() };
+        }
+        weeklyData[key].count++;
+        weeklyData[key].totalWeight += parseFloat(d.weight) || 0;
+        weeklyData[key].exercises.add(d.exercise);
+      });
+      
+      const sortedKeys = Object.keys(weeklyData).sort();
+      
+      let html = '<div style="font-size: 12px; color: #555;">';
+      sortedKeys.forEach(key => {
+        const data = weeklyData[key];
+        const avgWeight = (data.totalWeight / data.count).toFixed(1);
+        const barWidth = Math.min((data.count / 25) * 100, 100);
+        
+        html += `
+          <div style="margin-bottom: 12px;">
+            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+              <span style="font-weight: 600;">${key}</span>
+              <span>${data.count} sets • ${avgWeight}kg avg</span>
+            </div>
+            <div style="background: #E0E0E0; height: 20px; border-radius: 4px; overflow: hidden;">
+              <div style="background: linear-gradient(90deg, #00796B 0%, #4CAF50 100%); height: 100%; width: ${barWidth}%; transition: width 0.3s;"></div>
+            </div>
+          </div>
+        `;
+      });
+      html += '</div>';
+      
+      document.getElementById('chartContent').innerHTML = html;
+    }
+    
+    function renderExerciseProgress(allData) {
+      // Get key exercises
+      const keyExercises = [
+        'Incline Barbell Bench Press',
+        'Back Squat',
+        'Deadlift (Conv/Sumo)',
+        'Pull-Ups / Weighted'
+      ];
+      
+      let html = '';
+      
+      keyExercises.forEach(exerciseName => {
+        const exerciseData = allData.filter(d => d.exercise === exerciseName);
+        
+        if (exerciseData.length === 0) return;
+        
+        exerciseData.sort((a, b) => a.timestamp - b.timestamp);
+        
+        const first = parseFloat(exerciseData[0].weight) || 0;
+        const last = parseFloat(exerciseData[exerciseData.length - 1].weight) || 0;
+        const change = last - first;
+        const changePercent = first > 0 ? ((change / first) * 100).toFixed(1) : 0;
+        
+        html += `
+          <div style="margin-bottom: 16px; padding: 12px; background: #F5F5F5; border-radius: 8px; border-left: 4px solid #00796B;">
+            <div style="font-weight: 700; font-size: 13px; color: #212121; margin-bottom: 6px;">
+              ${exerciseName}
+            </div>
+            <div style="display: flex; justify-content: space-between; font-size: 12px; color: #555;">
+              <span>First: ${first}kg</span>
+              <span>Latest: ${last}kg</span>
+              <span style="color: ${change >= 0 ? '#4CAF50' : '#F44336'}; font-weight: 600;">
+                ${change >= 0 ? '+' : ''}${change}kg (${changePercent}%)
+              </span>
+            </div>
+            <div style="margin-top: 8px; background: #E0E0E0; height: 6px; border-radius: 3px; overflow: hidden;">
+              <div style="background: linear-gradient(90deg, #00796B 0%, #4CAF50 100%); height: 100%; width: ${Math.min((last / (first * 1.5)) * 100, 100)}%;"></div>
+            </div>
+          </div>
+        `;
+      });
+      
+      if (html === '') {
+        html = '<div class="no-data-message">Log more exercises to see detailed progress.</div>';
+      }
+      
+      document.getElementById('exerciseProgressContent').innerHTML = html;
     }
     
     // Export to CSV
@@ -769,29 +1043,48 @@
       const data = await loadAllData();
       
       if (data.length === 0) {
-        alert('No workout data to export yet. Start logging your workouts!');
+        alert('No workout data to export yet!');
         return;
       }
       
       const csv = [
-        'Week,Day,Exercise,Weight (kg),Date',
-        ...data.map(d => `W${d.week},${d.day},${d.exercise},${d.weight},${new Date(d.timestamp).toLocaleDateString()}`)
+        'Cycle,Week,Day,Exercise,Weight (kg),Date',
+        ...data.map(d => `${d.cycle},W${d.week},${d.day},${d.exercise},${d.weight},${new Date(d.timestamp).toLocaleDateString()}`)
       ].join('\n');
       
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `fitpal-workout-data-${new Date().toISOString().split('T')[0]}.csv`;
+      a.download = `fitpal-data-${new Date().toISOString().split('T')[0]}.csv`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
       
-      alert('✓ Workout data exported successfully!');
+      alert('✓ Data exported successfully!');
     }
     
     document.getElementById('exportBtn').onclick = exportData;
+    
+    // Restart cycle
+    document.getElementById('restartBtn').onclick = () => {
+      if (confirm('Start a new 12-week cycle? Your progress data will be preserved for tracking.')) {
+        currentCycle++;
+        currentWeek = 42;
+        localStorage.setItem('currentCycle', currentCycle);
+        localStorage.setItem('currentWeek', currentWeek);
+        
+        renderWeekSelector();
+        renderAllWorkouts();
+        updateStats();
+        
+        alert(`✓ Started Cycle ${currentCycle}! Good luck with your training!`);
+        
+        switchTab('workout');
+        document.querySelectorAll('.nav-tab')[0].classList.add('active');
+      }
+    };
     
     // PWA Install
     let deferredPrompt;
@@ -807,14 +1100,10 @@
         const { outcome } = await deferredPrompt.userChoice;
         deferredPrompt = null;
         document.getElementById('installPrompt').classList.remove('show');
-        
-        if (outcome === 'accepted') {
-          console.log('App installed successfully');
-        }
       }
     };
     
-    // Create PWA Manifest dynamically
+    // Create PWA Manifest
     const manifestData = {
       name: "FitPal - Workout Tracker",
       short_name: "FitPal",
@@ -841,12 +1130,12 @@
     const manifestURL = URL.createObjectURL(manifestBlob);
     document.getElementById('manifest-placeholder').setAttribute('href', manifestURL);
     
-    // Service Worker for offline support
+    // Service Worker
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register(
         URL.createObjectURL(
           new Blob([`
-            const CACHE_NAME = 'fitpal-v1';
+            const CACHE_NAME = 'fitpal-v2';
             
             self.addEventListener('install', (event) => {
               event.waitUntil(
@@ -879,30 +1168,27 @@
             });
           `], { type: 'application/javascript' })
         )
-      ).catch(() => {
-        console.log('Service Worker registration failed');
-      });
+      ).catch(() => {});
     }
     
-    // Initialize app
+    // Make switchTab global
+    window.switchTab = switchTab;
+    window.selectWeek = selectWeek;
+    window.handleWeightChange = handleWeightChange;
+    
+    // Initialize
     (async () => {
       try {
         await initDB();
         renderWeekSelector();
-        renderTabs();
-        await renderWorkout();
+        await renderAllWorkouts();
         await updateStats();
       } catch (error) {
-        console.error('Initialization error:', error);
-        document.getElementById('workoutContent').innerHTML = `
-          <div class="loading">
-            <p>⚠️ Error loading app. Please refresh the page.</p>
-          </div>
-        `;
+        console.error('Init error:', error);
+        alert('Error loading app. Please refresh.');
       }
     })();
     
-    // Prevent zoom on input focus (better mobile UX)
     document.addEventListener('touchstart', () => {}, { passive: true });
   </script>
 </body>
