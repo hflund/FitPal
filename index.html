@@ -233,16 +233,19 @@
     }
     
     .exercise-row.superset {
+      padding: 10px 0;
+      margin: 0;
       background: white;
-      border-radius: 6px;
-      padding: 10px;
-      margin: 4px 0;
+      border-radius: 0;
       border-left: none;
     }
     
     .exercise-info {
       flex: 1;
       min-width: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
     
     .exercise-name {
@@ -302,16 +305,34 @@
     }
     
     .chart-btn {
-      padding: 6px 10px;
+      padding: 8px 10px;
       background: #E0F2F1;
       border: 1px solid #00796B;
       border-radius: 6px;
       cursor: pointer;
-      font-size: 18px;
       color: #00796B;
       font-weight: 600;
       white-space: nowrap;
       line-height: 1;
+      font-family: Arial, sans-serif;
+      position: relative;
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .chart-btn:active {
+      background: #B2DFDB;
+    }
+    
+    .chart-btn svg {
+      width: 18px;
+      height: 18px;
+      fill: none;
+      stroke: #00796B;
+      stroke-width: 2;
     }
     
     .chart-btn:active {
@@ -346,13 +367,11 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      flex: 1;
-      max-width: 200px;
     }
     
     .converter-input {
-      flex: 1;
-      padding: 12px;
+      flex: 0 0 80px;
+      padding: 10px 8px;
       border: 2px solid #E0E0E0;
       border-radius: 8px;
       font-size: 16px;
@@ -1090,7 +1109,13 @@
                        onchange="handleWeightChange('${day}', '${exercise.name.replace(/'/g, "\\'")}', this.value)"
                        inputmode="decimal">
                 <span class="weight-unit">kg</span>
-                <button class="chart-btn" onclick="showExerciseChart('${exercise.name.replace(/'/g, "\\'")}')">📊</button>
+                <button class="chart-btn" onclick="showExerciseChart('${exercise.name.replace(/'/g, "\\'")}')">
+                  <svg viewBox="0 0 24 24">
+                    <rect x="4" y="14" width="4" height="6"/>
+                    <rect x="10" y="10" width="4" height="10"/>
+                    <rect x="16" y="6" width="4" height="14"/>
+                  </svg>
+                </button>
               </div>
             </div>
           `;
@@ -1349,7 +1374,7 @@
       
       let html = '';
       
-      allExercises.forEach(exerciseName => {
+      for (const exerciseName of allExercises) {
         const exerciseData = allData.filter(d => d.exercise === exerciseName);
         
         if (exerciseData.length === 0) {
@@ -1364,7 +1389,7 @@
               </div>
             </div>
           `;
-          return;
+          continue;
         }
         
         exerciseData.sort((a, b) => a.timestamp - b.timestamp);
@@ -1374,26 +1399,68 @@
         const change = last - first;
         const changePercent = first > 0 ? ((change / first) * 100).toFixed(1) : 0;
         
+        // Create mini chart
+        const chartData = exerciseData.map(d => ({
+          label: `C${d.cycle}W${d.week}`,
+          value: parseFloat(d.weight) || 0
+        }));
+        
+        const miniChart = renderMiniLineChart(chartData);
+        
         html += `
           <div style="margin-bottom: 16px; padding: 14px; background: #F5F5F5; border-radius: 8px; border-left: 4px solid #00796B; cursor: pointer;" onclick="showExerciseChart('${exerciseName.replace(/'/g, "\\'")}')">
             <div style="font-weight: 700; font-size: 14px; color: #212121; margin-bottom: 8px;">
               ${exerciseName}
             </div>
-            <div style="display: flex; justify-content: space-between; font-size: 12px; color: #555; margin-bottom: 6px;">
+            <div style="display: flex; justify-content: space-between; font-size: 12px; color: #555; margin-bottom: 8px;">
               <span>First: ${first}kg</span>
               <span>Latest: ${last}kg</span>
               <span style="color: ${change >= 0 ? '#4CAF50' : '#F44336'}; font-weight: 600;">
                 ${change >= 0 ? '+' : ''}${change.toFixed(1)}kg (${changePercent}%)
               </span>
             </div>
-            <div style="background: #E0E0E0; height: 6px; border-radius: 3px; overflow: hidden;">
-              <div style="background: linear-gradient(90deg, #00796B 0%, #4CAF50 100%); height: 100%; width: ${Math.min((last / (first * 1.3)) * 100, 100)}%;"></div>
-            </div>
+            ${miniChart}
           </div>
         `;
-      });
+      }
       
       document.getElementById('exerciseTrendsContent').innerHTML = html;
+    }
+    
+    function renderMiniLineChart(data) {
+      const width = 400;
+      const height = 80;
+      const padding = 20;
+      
+      const values = data.map(d => d.value);
+      const max = Math.max(...values);
+      const min = Math.min(...values);
+      const range = max - min || 1;
+      
+      const points = data.map((d, i) => {
+        const x = padding + (i / (data.length - 1 || 1)) * (width - padding * 2);
+        const y = height - padding - ((d.value - min) / range) * (height - padding * 2);
+        return { x, y };
+      });
+      
+      const pathData = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
+      
+      // Area path
+      const areaPath = pathData + ` L ${points[points.length - 1].x} ${height - padding} L ${padding} ${height - padding} Z`;
+      
+      let svg = `<svg width="100%" height="${height}" viewBox="0 0 ${width} ${height}" style="max-width: 100%;">`;
+      svg += `<defs><linearGradient id="miniGradient" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:#00796B;stop-opacity:0.3" /><stop offset="100%" style="stop-color:#4CAF50;stop-opacity:0.1" /></linearGradient></defs>`;
+      svg += `<path d="${areaPath}" fill="url(#miniGradient)"/>`;
+      svg += `<defs><linearGradient id="miniLineGradient" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#00796B" /><stop offset="100%" style="stop-color:#4CAF50" /></linearGradient></defs>`;
+      svg += `<path d="${pathData}" stroke="url(#miniLineGradient)" stroke-width="2" fill="none"/>`;
+      
+      points.forEach(p => {
+        svg += `<circle cx="${p.x}" cy="${p.y}" r="3" fill="#00796B"/>`;
+      });
+      
+      svg += '</svg>';
+      
+      return svg;
     }
     
     async function exportData() {
