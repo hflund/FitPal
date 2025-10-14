@@ -7,7 +7,7 @@
   <meta name="description" content="12-Week Workout Tracker">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>FitPal - Workout Tracker</title>
+  <title>FitPal</title>
   
   <link rel="manifest" id="manifest-placeholder">
   
@@ -221,8 +221,11 @@
     }
     
     .exercise-row {
-      padding: 12px;
+      padding: 10px 0;
       border-bottom: 1px solid #f0f0f0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
     
     .exercise-row:last-child {
@@ -232,58 +235,53 @@
     .exercise-row.superset {
       background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 100%);
       border-radius: 6px;
-      margin: 6px 0;
+      padding: 10px;
+      margin: 4px 0;
       border-left: 4px solid #2196F3;
-    }
-    
-    .exercise-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 10px;
-      gap: 8px;
     }
     
     .exercise-info {
       flex: 1;
+      min-width: 0;
     }
     
     .exercise-name {
       font-weight: 700;
       color: #212121;
-      font-size: 14px;
-      margin-bottom: 3px;
+      font-size: 13px;
       line-height: 1.3;
+      margin-bottom: 2px;
     }
     
-    .exercise-category {
+    .exercise-meta {
       font-size: 11px;
       color: #757575;
-      font-weight: 500;
+      display: flex;
+      gap: 8px;
+      align-items: center;
     }
     
     .exercise-sets {
-      font-size: 12px;
+      font-size: 11px;
       color: #00796B;
       font-weight: 600;
-      white-space: nowrap;
       background: #E0F2F1;
-      padding: 4px 8px;
-      border-radius: 6px;
+      padding: 2px 6px;
+      border-radius: 4px;
     }
     
-    .weight-input-container {
+    .weight-input-group {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
     
     .weight-input {
-      width: 85px;
-      padding: 12px 8px;
+      width: 70px;
+      padding: 8px 6px;
       border: 2px solid #E0E0E0;
-      border-radius: 8px;
-      font-size: 16px;
+      border-radius: 6px;
+      font-size: 15px;
       font-weight: 600;
       text-align: center;
       transition: all 0.3s;
@@ -300,17 +298,89 @@
     .weight-unit {
       font-weight: 600;
       color: #757575;
-      font-size: 14px;
+      font-size: 12px;
     }
     
-    .exercise-notes {
-      margin-top: 8px;
+    .chart-btn {
+      padding: 6px 10px;
+      background: #E0F2F1;
+      border: 1px solid #00796B;
+      border-radius: 6px;
+      cursor: pointer;
       font-size: 11px;
-      color: #616161;
-      font-style: italic;
-      padding-left: 8px;
-      border-left: 3px solid #E0E0E0;
-      line-height: 1.4;
+      color: #00796B;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    
+    .chart-btn:active {
+      background: #B2DFDB;
+    }
+    
+    .converter-section {
+      background: white;
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 14px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    
+    .converter-section h3 {
+      color: #00796B;
+      margin-bottom: 14px;
+      font-size: 17px;
+      font-weight: 700;
+      border-bottom: 3px solid #E0F2F1;
+      padding-bottom: 8px;
+    }
+    
+    .converter-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+    
+    .converter-input {
+      flex: 1;
+      padding: 12px;
+      border: 2px solid #E0E0E0;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      text-align: center;
+    }
+    
+    .converter-input:focus {
+      outline: none;
+      border-color: #00796B;
+      box-shadow: 0 0 0 3px rgba(0,121,107,0.1);
+    }
+    
+    .converter-label {
+      font-weight: 600;
+      color: #00796B;
+      font-size: 14px;
+      min-width: 30px;
+    }
+    
+    .swap-btn {
+      width: 40px;
+      height: 40px;
+      background: #00796B;
+      border: none;
+      border-radius: 50%;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s;
+    }
+    
+    .swap-btn:active {
+      transform: scale(0.9);
     }
     
     .guidelines-section {
@@ -388,11 +458,39 @@
     
     .chart-canvas {
       width: 100%;
-      height: 250px;
+      min-height: 200px;
       background: #FAFAFA;
       border-radius: 8px;
       padding: 10px;
       position: relative;
+    }
+    
+    .line-chart {
+      width: 100%;
+      height: 200px;
+      position: relative;
+    }
+    
+    .chart-line {
+      stroke: #00796B;
+      stroke-width: 3;
+      fill: none;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    
+    .chart-dot {
+      fill: #00796B;
+    }
+    
+    .chart-grid {
+      stroke: #E0E0E0;
+      stroke-width: 1;
+    }
+    
+    .chart-label {
+      font-size: 10px;
+      fill: #757575;
     }
     
     .no-data-message {
@@ -511,21 +609,6 @@
       }
     }
     
-    .progress-bar {
-      width: 100%;
-      height: 8px;
-      background: #E0E0E0;
-      border-radius: 4px;
-      overflow: hidden;
-      margin: 10px 0;
-    }
-    
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #00796B 0%, #4CAF50 100%);
-      transition: width 0.3s ease;
-    }
-    
     .cycle-info {
       background: #E8F5E9;
       padding: 12px;
@@ -538,22 +621,75 @@
     .cycle-info strong {
       color: #2E7D32;
     }
+    
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    
+    .modal.show {
+      display: flex;
+    }
+    
+    .modal-content {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      max-width: 500px;
+      width: 100%;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #E0F2F1;
+    }
+    
+    .modal-header h3 {
+      color: #00796B;
+      font-size: 18px;
+    }
+    
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #757575;
+      padding: 0;
+      width: 30px;
+      height: 30px;
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="install-prompt" id="installPrompt">
-      <strong>📱 Install FitPal!</strong>
+      <strong>Install FitPal!</strong>
       <p>Add to your home screen for offline gym use.</p>
       <button class="install-btn" id="installBtn">Install App</button>
     </div>
     
     <div class="success-message" id="successMessage">
-      ✓ Weight saved!
+      Weight saved!
     </div>
     
     <div class="header">
-      <h1>💪 FitPal Tracker</h1>
+      <h1>FitPal Tracker</h1>
       <p>12-Week Training Program</p>
     </div>
     
@@ -583,15 +719,40 @@
       <div class="cycle-info" id="cycleInfo"></div>
       
       <div class="week-selector">
-        <h2>📅 Select Week</h2>
+        <h2>Select Week</h2>
         <div class="week-grid" id="weekGrid"></div>
         <div class="phase-info" id="phaseInfo"></div>
       </div>
       
       <div id="workoutContent"></div>
       
+      <div class="converter-section">
+        <h3>Unit Converter</h3>
+        <div class="converter-row">
+          <span class="converter-label">lb</span>
+          <input type="number" 
+                 id="lbInput" 
+                 class="converter-input" 
+                 placeholder="0.0" 
+                 step="0.5"
+                 oninput="convertLbToKg(this.value)">
+        </div>
+        <div style="text-align: center; margin: 8px 0;">
+          <button class="swap-btn" onclick="swapConverter()">⇅</button>
+        </div>
+        <div class="converter-row">
+          <span class="converter-label">kg</span>
+          <input type="number" 
+                 id="kgInput" 
+                 class="converter-input" 
+                 placeholder="0.0" 
+                 step="0.5"
+                 oninput="convertKgToLb(this.value)">
+        </div>
+      </div>
+      
       <div class="guidelines-section">
-        <h3>📚 Training Guidelines</h3>
+        <h3>Training Guidelines</h3>
         <div class="guideline-card">
           <h4>Superset Strategy</h4>
           <ul>
@@ -639,39 +800,39 @@
       </div>
       
       <div class="chart-container">
-        <h3>📈 Progress Over Time</h3>
-        <div id="chartContent"></div>
+        <h3>Sessions Per Week</h3>
+        <div id="sessionsChartContent"></div>
       </div>
       
       <div class="chart-container">
-        <h3>🏋️ Exercise Progress</h3>
-        <div id="exerciseProgressContent"></div>
+        <h3>Exercise Progress Trends</h3>
+        <div id="exerciseTrendsContent"></div>
       </div>
     </div>
     
     <!-- SETTINGS TAB -->
     <div id="settings-tab" class="tab-content">
       <div class="action-container">
-        <h3>💾 Backup & Export</h3>
+        <h3>Backup & Export</h3>
         <button class="export-btn" id="exportBtn">
-          <span>📥</span>
+          <span>↓</span>
           <span>Export to CSV</span>
         </button>
       </div>
       
       <div class="action-container">
-        <h3>🔄 Start New Cycle</h3>
+        <h3>Start New Cycle</h3>
         <p style="text-align: center; color: #757575; font-size: 13px; margin-bottom: 12px;">
           Complete current cycle and start fresh. Progress data will be preserved.
         </p>
         <button class="restart-btn" id="restartBtn">
-          <span>🔄</span>
+          <span>↻</span>
           <span>Start New 12-Week Cycle</span>
         </button>
       </div>
       
       <div class="guidelines-section">
-        <h3>ℹ️ About FitPal</h3>
+        <h3>About FitPal</h3>
         <p style="font-size: 13px; line-height: 1.6; color: #555;">
           <strong>12-Week Training Program</strong><br>
           Upper / Lower / Full Body Split designed for general fitness and strength development.
@@ -684,8 +845,18 @@
     </div>
   </div>
   
+  <!-- Chart Modal -->
+  <div class="modal" id="chartModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalTitle">Exercise Progress</h3>
+        <button class="modal-close" onclick="closeChartModal()">×</button>
+      </div>
+      <div id="modalChartContent"></div>
+    </div>
+  </div>
+  
   <script>
-    // Configuration
     const WEEKS = [42, 43, 44, 45, 46, 47, 48, 49, 50, 51, 52, 1];
     const PHASES = {
       42: 'Foundation', 43: 'Foundation', 44: 'Foundation', 45: 'Foundation',
@@ -732,22 +903,37 @@
       ]
     };
     
-    // State
     let currentWeek = parseInt(localStorage.getItem('currentWeek')) || 42;
     let currentCycle = parseInt(localStorage.getItem('currentCycle')) || 1;
     let db;
     
-    // IndexedDB Setup
+    // Converter functions
+    function convertLbToKg(lb) {
+      const kg = (parseFloat(lb) / 2.20462).toFixed(2);
+      document.getElementById('kgInput').value = lb ? kg : '';
+    }
+    
+    function convertKgToLb(kg) {
+      const lb = (parseFloat(kg) * 2.20462).toFixed(2);
+      document.getElementById('lbInput').value = kg ? lb : '';
+    }
+    
+    function swapConverter() {
+      const lbVal = document.getElementById('lbInput').value;
+      const kgVal = document.getElementById('kgInput').value;
+      document.getElementById('lbInput').value = kgVal ? (parseFloat(kgVal) * 2.20462).toFixed(2) : '';
+      document.getElementById('kgInput').value = lbVal ? (parseFloat(lbVal) / 2.20462).toFixed(2) : '';
+    }
+    
+    // IndexedDB
     function initDB() {
       return new Promise((resolve, reject) => {
         const request = indexedDB.open('FitPalDB', 2);
-        
         request.onerror = () => reject(request.error);
         request.onsuccess = () => {
           db = request.result;
           resolve(db);
         };
-        
         request.onupgradeneeded = (event) => {
           const db = event.target.result;
           if (!db.objectStoreNames.contains('workouts')) {
@@ -757,7 +943,6 @@
       });
     }
     
-    // Save weight
     async function saveWeight(week, day, exercise, weight) {
       const id = `${currentCycle}-${week}-${day}-${exercise}`;
       const transaction = db.transaction(['workouts'], 'readwrite');
@@ -771,34 +956,27 @@
       updateStats();
     }
     
-    // Load weight
     async function loadWeight(week, day, exercise) {
       return new Promise((resolve) => {
         const id = `${currentCycle}-${week}-${day}-${exercise}`;
         const transaction = db.transaction(['workouts'], 'readonly');
         const store = transaction.objectStore('workouts');
         const request = store.get(id);
-        
-        request.onsuccess = () => {
-          resolve(request.result ? request.result.weight : '');
-        };
+        request.onsuccess = () => resolve(request.result ? request.result.weight : '');
         request.onerror = () => resolve('');
       });
     }
     
-    // Load all data
     async function loadAllData() {
       return new Promise((resolve) => {
         const transaction = db.transaction(['workouts'], 'readonly');
         const store = transaction.objectStore('workouts');
         const request = store.getAll();
-        
         request.onsuccess = () => resolve(request.result);
         request.onerror = () => resolve([]);
       });
     }
     
-    // Update stats
     async function updateStats() {
       const allData = await loadAllData();
       const currentCycleData = allData.filter(d => d.cycle === currentCycle);
@@ -808,7 +986,6 @@
       document.getElementById('totalSets').textContent = currentCycleData.length;
       document.getElementById('currentWeekDisplay').textContent = `W${currentWeek}`;
       
-      // Progress tab stats
       const uniqueCycles = new Set(allData.map(d => d.cycle)).size;
       const uniqueWeeks = new Set(allData.map(d => `${d.cycle}-${d.week}`)).size;
       const totalWorkouts = new Set(allData.map(d => `${d.cycle}-${d.week}-${d.day}`)).size;
@@ -817,22 +994,14 @@
       document.getElementById('totalWeeks').textContent = uniqueWeeks;
       document.getElementById('totalWorkouts').textContent = totalWorkouts;
       
-      // Update cycle info
       updateCycleInfo();
     }
     
     function updateCycleInfo() {
       const cycleInfo = document.getElementById('cycleInfo');
-      const progress = ((WEEKS.indexOf(currentWeek) + 1) / 12 * 100).toFixed(0);
-      cycleInfo.innerHTML = `
-        <strong>Cycle ${currentCycle}</strong> - Week ${currentWeek} of 12
-        <div class="progress-bar">
-          <div class="progress-fill" style="width: ${progress}%"></div>
-        </div>
-      `;
+      cycleInfo.innerHTML = `<strong>Cycle ${currentCycle}</strong> - Week ${currentWeek} of 12`;
     }
     
-    // Switch tabs
     function switchTab(tab) {
       document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
       document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
@@ -845,7 +1014,6 @@
       }
     }
     
-    // Render week selector
     function renderWeekSelector() {
       const grid = document.getElementById('weekGrid');
       grid.innerHTML = WEEKS.map(week => `
@@ -855,7 +1023,6 @@
           <small>${PHASES[week]}</small>
         </button>
       `).join('');
-      
       updatePhaseInfo();
     }
     
@@ -874,10 +1041,8 @@
       window.scrollTo(0, 0);
     }
     
-    // Render all workouts
     async function renderAllWorkouts() {
       const content = document.getElementById('workoutContent');
-      
       const dayTitles = {
         upper: 'Day 1 - Upper Body',
         lower: 'Day 2 - Lower Body',
@@ -894,14 +1059,14 @@
           const weight = await loadWeight(currentWeek, day, exercise.name);
           html += `
             <div class="exercise-row ${exercise.superset ? 'superset' : ''}">
-              <div class="exercise-header">
-                <div class="exercise-info">
-                  <div class="exercise-name">${exercise.name}</div>
-                  <div class="exercise-category">${exercise.category}</div>
+              <div class="exercise-info">
+                <div class="exercise-name">${exercise.name}</div>
+                <div class="exercise-meta">
+                  <span class="exercise-sets">${exercise.sets}</span>
+                  <span style="font-size: 10px;">${exercise.notes}</span>
                 </div>
-                <div class="exercise-sets">${exercise.sets}</div>
               </div>
-              <div class="weight-input-container">
+              <div class="weight-input-group">
                 <input type="number" 
                        class="weight-input" 
                        placeholder="0.0"
@@ -910,8 +1075,8 @@
                        onchange="handleWeightChange('${day}', '${exercise.name.replace(/'/g, "\\'")}', this.value)"
                        inputmode="decimal">
                 <span class="weight-unit">kg</span>
+                <button class="chart-btn" onclick="showExerciseChart('${exercise.name.replace(/'/g, "\\'")}')">📈</button>
               </div>
-              ${exercise.notes ? `<div class="exercise-notes">💡 ${exercise.notes}</div>` : ''}
             </div>
           `;
         }
@@ -926,84 +1091,149 @@
       await saveWeight(currentWeek, day, exercise, weight);
     }
     
-    // Render progress charts
+    function showExerciseChart(exerciseName) {
+      document.getElementById('modalTitle').textContent = exerciseName;
+      renderExerciseChartInModal(exerciseName);
+      document.getElementById('chartModal').classList.add('show');
+    }
+    
+    function closeChartModal() {
+      document.getElementById('chartModal').classList.remove('show');
+    }
+    
+    async function renderExerciseChartInModal(exerciseName) {
+      const allData = await loadAllData();
+      const exerciseData = allData.filter(d => d.exercise === exerciseName);
+      
+      if (exerciseData.length === 0) {
+        document.getElementById('modalChartContent').innerHTML = '<div class="no-data-message">No data logged for this exercise yet.</div>';
+        return;
+      }
+      
+      exerciseData.sort((a, b) => a.timestamp - b.timestamp);
+      
+      const svg = renderLineChart(exerciseData, exerciseName);
+      document.getElementById('modalChartContent').innerHTML = svg;
+    }
+    
+    function renderLineChart(data, exerciseName) {
+      const width = 450;
+      const height = 250;
+      const padding = 40;
+      
+      const weights = data.map(d => parseFloat(d.weight) || 0);
+      const maxWeight = Math.max(...weights);
+      const minWeight = Math.min(...weights);
+      const range = maxWeight - minWeight || 10;
+      
+      const points = data.map((d, i) => {
+        const x = padding + (i / (data.length - 1 || 1)) * (width - padding * 2);
+        const y = height - padding - ((parseFloat(d.weight) - minWeight) / range) * (height - padding * 2);
+        return { x, y, weight: d.weight, label: `C${d.cycle}W${d.week}` };
+      });
+      
+      const pathData = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
+      
+      let svg = `<svg width="100%" height="${height}" viewBox="0 0 ${width} ${height}" style="max-width: 100%;">`;
+      
+      // Grid lines
+      for (let i = 0; i <= 4; i++) {
+        const y = padding + (i / 4) * (height - padding * 2);
+        svg += `<line x1="${padding}" y1="${y}" x2="${width - padding}" y2="${y}" class="chart-grid"/>`;
+        const labelWeight = (maxWeight - (i / 4) * range).toFixed(1);
+        svg += `<text x="${padding - 5}" y="${y + 4}" text-anchor="end" class="chart-label">${labelWeight}kg</text>`;
+      }
+      
+      // Line
+      svg += `<path d="${pathData}" class="chart-line"/>`;
+      
+      // Points
+      points.forEach(p => {
+        svg += `<circle cx="${p.x}" cy="${p.y}" r="4" class="chart-dot"/>`;
+        svg += `<text x="${p.x}" y="${height - 10}" text-anchor="middle" class="chart-label">${p.label}</text>`;
+      });
+      
+      svg += '</svg>';
+      
+      // Stats
+      const first = parseFloat(data[0].weight);
+      const last = parseFloat(data[data.length - 1].weight);
+      const change = last - first;
+      const changePercent = first > 0 ? ((change / first) * 100).toFixed(1) : 0;
+      
+      svg += `
+        <div style="margin-top: 16px; padding: 12px; background: #F5F5F5; border-radius: 8px;">
+          <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px;">
+            <span><strong>First:</strong> ${first}kg</span>
+            <span><strong>Latest:</strong> ${last}kg</span>
+          </div>
+          <div style="font-size: 14px; font-weight: 700; color: ${change >= 0 ? '#4CAF50' : '#F44336'}; text-align: center;">
+            ${change >= 0 ? '+' : ''}${change.toFixed(1)}kg (${change >= 0 ? '+' : ''}${changePercent}%)
+          </div>
+        </div>
+      `;
+      
+      return svg;
+    }
+    
     async function renderProgressCharts() {
       const allData = await loadAllData();
       
       if (allData.length === 0) {
-        document.getElementById('chartContent').innerHTML = `
-          <div class="no-data-message">
-            No workout data yet. Start logging to see your progress!
-          </div>
-        `;
-        document.getElementById('exerciseProgressContent').innerHTML = `
-          <div class="no-data-message">
-            Exercise progress will appear here once you log workouts.
-          </div>
-        `;
+        document.getElementById('sessionsChartContent').innerHTML = '<div class="no-data-message">No workout data yet.</div>';
+        document.getElementById('exerciseTrendsContent').innerHTML = '<div class="no-data-message">Exercise trends will appear here.</div>';
         return;
       }
       
-      // Overall progress chart
-      renderOverallProgress(allData);
-      
-      // Exercise-specific progress
-      renderExerciseProgress(allData);
+      renderSessionsPerWeek(allData);
+      renderAllExerciseTrends(allData);
     }
     
-    function renderOverallProgress(allData) {
-      // Group by cycle and week
+    function renderSessionsPerWeek(allData) {
       const weeklyData = {};
+      
       allData.forEach(d => {
-        const key = `C${d.cycle}-W${d.week}`;
+        const key = `C${d.cycle}W${d.week}`;
         if (!weeklyData[key]) {
-          weeklyData[key] = { count: 0, totalWeight: 0, exercises: new Set() };
+          weeklyData[key] = new Set();
         }
-        weeklyData[key].count++;
-        weeklyData[key].totalWeight += parseFloat(d.weight) || 0;
-        weeklyData[key].exercises.add(d.exercise);
+        weeklyData[key].add(d.day);
       });
       
       const sortedKeys = Object.keys(weeklyData).sort();
       
       let html = '<div style="font-size: 12px; color: #555;">';
       sortedKeys.forEach(key => {
-        const data = weeklyData[key];
-        const avgWeight = (data.totalWeight / data.count).toFixed(1);
-        const barWidth = Math.min((data.count / 25) * 100, 100);
+        const sessions = weeklyData[key].size;
+        const barWidth = (sessions / 3) * 100;
+        const color = sessions === 3 ? '#4CAF50' : sessions === 2 ? '#FBC02D' : '#FF9800';
         
         html += `
           <div style="margin-bottom: 12px;">
             <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
               <span style="font-weight: 600;">${key}</span>
-              <span>${data.count} sets • ${avgWeight}kg avg</span>
+              <span>${sessions} session${sessions !== 1 ? 's' : ''}</span>
             </div>
             <div style="background: #E0E0E0; height: 20px; border-radius: 4px; overflow: hidden;">
-              <div style="background: linear-gradient(90deg, #00796B 0%, #4CAF50 100%); height: 100%; width: ${barWidth}%; transition: width 0.3s;"></div>
+              <div style="background: ${color}; height: 100%; width: ${barWidth}%; transition: width 0.3s;"></div>
             </div>
           </div>
         `;
       });
       html += '</div>';
       
-      document.getElementById('chartContent').innerHTML = html;
+      document.getElementById('sessionsChartContent').innerHTML = html;
     }
     
-    function renderExerciseProgress(allData) {
-      // Get key exercises
-      const keyExercises = [
-        'Incline Barbell Bench Press',
-        'Back Squat',
-        'Deadlift (Conv/Sumo)',
-        'Pull-Ups / Weighted'
-      ];
+    async function renderAllExerciseTrends(allData) {
+      const allExercises = [...new Set(allData.map(d => d.exercise))];
       
       let html = '';
       
-      keyExercises.forEach(exerciseName => {
+      allExercises.forEach(exerciseName => {
         const exerciseData = allData.filter(d => d.exercise === exerciseName);
         
-        if (exerciseData.length === 0) return;
+        if (exerciseData.length < 2) return;
         
         exerciseData.sort((a, b) => a.timestamp - b.timestamp);
         
@@ -1013,32 +1243,31 @@
         const changePercent = first > 0 ? ((change / first) * 100).toFixed(1) : 0;
         
         html += `
-          <div style="margin-bottom: 16px; padding: 12px; background: #F5F5F5; border-radius: 8px; border-left: 4px solid #00796B;">
-            <div style="font-weight: 700; font-size: 13px; color: #212121; margin-bottom: 6px;">
+          <div style="margin-bottom: 16px; padding: 14px; background: #F5F5F5; border-radius: 8px; border-left: 4px solid #00796B; cursor: pointer;" onclick="showExerciseChart('${exerciseName.replace(/'/g, "\\'")}')">
+            <div style="font-weight: 700; font-size: 14px; color: #212121; margin-bottom: 8px;">
               ${exerciseName}
             </div>
-            <div style="display: flex; justify-content: space-between; font-size: 12px; color: #555;">
+            <div style="display: flex; justify-content: space-between; font-size: 12px; color: #555; margin-bottom: 6px;">
               <span>First: ${first}kg</span>
               <span>Latest: ${last}kg</span>
               <span style="color: ${change >= 0 ? '#4CAF50' : '#F44336'}; font-weight: 600;">
-                ${change >= 0 ? '+' : ''}${change}kg (${changePercent}%)
+                ${change >= 0 ? '+' : ''}${change.toFixed(1)}kg (${changePercent}%)
               </span>
             </div>
-            <div style="margin-top: 8px; background: #E0E0E0; height: 6px; border-radius: 3px; overflow: hidden;">
-              <div style="background: linear-gradient(90deg, #00796B 0%, #4CAF50 100%); height: 100%; width: ${Math.min((last / (first * 1.5)) * 100, 100)}%;"></div>
+            <div style="background: #E0E0E0; height: 6px; border-radius: 3px; overflow: hidden;">
+              <div style="background: linear-gradient(90deg, #00796B 0%, #4CAF50 100%); height: 100%; width: ${Math.min((last / (first * 1.3)) * 100, 100)}%;"></div>
             </div>
           </div>
         `;
       });
       
       if (html === '') {
-        html = '<div class="no-data-message">Log more exercises to see detailed progress.</div>';
+        html = '<div class="no-data-message">Log more exercises to see trends.</div>';
       }
       
-      document.getElementById('exerciseProgressContent').innerHTML = html;
+      document.getElementById('exerciseTrendsContent').innerHTML = html;
     }
     
-    // Export to CSV
     async function exportData() {
       const data = await loadAllData();
       
@@ -1062,12 +1291,11 @@
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
       
-      alert('✓ Data exported successfully!');
+      alert('Data exported successfully!');
     }
     
     document.getElementById('exportBtn').onclick = exportData;
     
-    // Restart cycle
     document.getElementById('restartBtn').onclick = () => {
       if (confirm('Start a new 12-week cycle? Your progress data will be preserved for tracking.')) {
         currentCycle++;
@@ -1079,14 +1307,14 @@
         renderAllWorkouts();
         updateStats();
         
-        alert(`✓ Started Cycle ${currentCycle}! Good luck with your training!`);
+        alert(`Started Cycle ${currentCycle}! Good luck!`);
         
         switchTab('workout');
         document.querySelectorAll('.nav-tab')[0].classList.add('active');
       }
     };
     
-    // PWA Install
+    // PWA
     let deferredPrompt;
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
@@ -1097,15 +1325,14 @@
     document.getElementById('installBtn').onclick = async () => {
       if (deferredPrompt) {
         deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
+        await deferredPrompt.userChoice;
         deferredPrompt = null;
         document.getElementById('installPrompt').classList.remove('show');
       }
     };
     
-    // Create PWA Manifest
     const manifestData = {
-      name: "FitPal - Workout Tracker",
+      name: "FitPal",
       short_name: "FitPal",
       start_url: "./",
       display: "standalone",
@@ -1114,13 +1341,8 @@
       orientation: "portrait",
       icons: [
         {
-          src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' fill='%2300796B' rx='24'/%3E%3Ctext x='50%25' y='50%25' font-size='100' text-anchor='middle' dy='.35em' fill='white' font-family='Arial, sans-serif'%3E💪%3C/text%3E%3C/svg%3E",
+          src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' fill='%2300796B' rx='24'/%3E%3Ctext x='96' y='120' font-size='80' text-anchor='middle' fill='white' font-family='Arial'%3EF%3C/text%3E%3C/svg%3E",
           sizes: "192x192",
-          type: "image/svg+xml"
-        },
-        {
-          src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' fill='%2300796B' rx='64'/%3E%3Ctext x='50%25' y='50%25' font-size='280' text-anchor='middle' dy='.35em' fill='white' font-family='Arial, sans-serif'%3E💪%3C/text%3E%3C/svg%3E",
-          sizes: "512x512",
           type: "image/svg+xml"
         }
       ]
@@ -1130,53 +1352,31 @@
     const manifestURL = URL.createObjectURL(manifestBlob);
     document.getElementById('manifest-placeholder').setAttribute('href', manifestURL);
     
-    // Service Worker
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register(
         URL.createObjectURL(
           new Blob([`
-            const CACHE_NAME = 'fitpal-v2';
-            
-            self.addEventListener('install', (event) => {
-              event.waitUntil(
-                caches.open(CACHE_NAME).then((cache) => {
-                  return cache.addAll(['./', './index.html']);
-                })
-              );
+            const CACHE_NAME = 'fitpal-v3';
+            self.addEventListener('install', (e) => {
+              e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(['./', './index.html'])));
             });
-            
-            self.addEventListener('fetch', (event) => {
-              event.respondWith(
-                caches.match(event.request).then((response) => {
-                  return response || fetch(event.request);
-                })
-              );
-            });
-            
-            self.addEventListener('activate', (event) => {
-              event.waitUntil(
-                caches.keys().then((cacheNames) => {
-                  return Promise.all(
-                    cacheNames.map((cacheName) => {
-                      if (cacheName !== CACHE_NAME) {
-                        return caches.delete(cacheName);
-                      }
-                    })
-                  );
-                })
-              );
+            self.addEventListener('fetch', (e) => {
+              e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
             });
           `], { type: 'application/javascript' })
         )
       ).catch(() => {});
     }
     
-    // Make switchTab global
     window.switchTab = switchTab;
     window.selectWeek = selectWeek;
     window.handleWeightChange = handleWeightChange;
+    window.showExerciseChart = showExerciseChart;
+    window.closeChartModal = closeChartModal;
+    window.convertLbToKg = convertLbToKg;
+    window.convertKgToLb = convertKgToLb;
+    window.swapConverter = swapConverter;
     
-    // Initialize
     (async () => {
       try {
         await initDB();
