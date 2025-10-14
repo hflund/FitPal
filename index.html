@@ -237,7 +237,7 @@
       border-radius: 6px;
       padding: 10px;
       margin: 4px 0;
-      border-left: 4px solid #2196F3;
+      border-left: none;
     }
     
     .exercise-info {
@@ -307,10 +307,11 @@
       border: 1px solid #00796B;
       border-radius: 6px;
       cursor: pointer;
-      font-size: 11px;
+      font-size: 18px;
       color: #00796B;
       font-weight: 600;
       white-space: nowrap;
+      line-height: 1;
     }
     
     .chart-btn:active {
@@ -800,12 +801,18 @@
       </div>
       
       <div class="chart-container">
-        <h3>Sessions Per Week</h3>
+        <h3>Workouts Per Week</h3>
         <div id="sessionsChartContent"></div>
       </div>
       
       <div class="chart-container">
+        <h3>Total Volume Progression</h3>
+        <div id="volumeChartContent"></div>
+      </div>
+      
+      <div class="chart-container">
         <h3>Exercise Progress Trends</h3>
+        <p style="font-size: 13px; color: #757575; margin-bottom: 12px;">Click any exercise to view detailed chart</p>
         <div id="exerciseTrendsContent"></div>
       </div>
     </div>
@@ -1075,7 +1082,7 @@
                        onchange="handleWeightChange('${day}', '${exercise.name.replace(/'/g, "\\'")}', this.value)"
                        inputmode="decimal">
                 <span class="weight-unit">kg</span>
-                <button class="chart-btn" onclick="showExerciseChart('${exercise.name.replace(/'/g, "\\'")}')">📈</button>
+                <button class="chart-btn" onclick="showExerciseChart('${exercise.name.replace(/'/g, "\\'")}')">📊</button>
               </div>
             </div>
           `;
@@ -1181,11 +1188,13 @@
       
       if (allData.length === 0) {
         document.getElementById('sessionsChartContent').innerHTML = '<div class="no-data-message">No workout data yet.</div>';
+        document.getElementById('volumeChartContent').innerHTML = '<div class="no-data-message">Volume data will appear here.</div>';
         document.getElementById('exerciseTrendsContent').innerHTML = '<div class="no-data-message">Exercise trends will appear here.</div>';
         return;
       }
       
       renderSessionsPerWeek(allData);
+      renderVolumeProgression(allData);
       renderAllExerciseTrends(allData);
     }
     
@@ -1202,27 +1211,121 @@
       
       const sortedKeys = Object.keys(weeklyData).sort();
       
-      let html = '<div style="font-size: 12px; color: #555;">';
-      sortedKeys.forEach(key => {
-        const sessions = weeklyData[key].size;
-        const barWidth = (sessions / 3) * 100;
-        const color = sessions === 3 ? '#4CAF50' : sessions === 2 ? '#FBC02D' : '#FF9800';
-        
-        html += `
-          <div style="margin-bottom: 12px;">
-            <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
-              <span style="font-weight: 600;">${key}</span>
-              <span>${sessions} session${sessions !== 1 ? 's' : ''}</span>
-            </div>
-            <div style="background: #E0E0E0; height: 20px; border-radius: 4px; overflow: hidden;">
-              <div style="background: ${color}; height: 100%; width: ${barWidth}%; transition: width 0.3s;"></div>
-            </div>
-          </div>
-        `;
-      });
-      html += '</div>';
+      if (sortedKeys.length === 0) {
+        document.getElementById('sessionsChartContent').innerHTML = '<div class="no-data-message">No workout data yet.</div>';
+        return;
+      }
       
-      document.getElementById('sessionsChartContent').innerHTML = html;
+      // Create line chart data
+      const chartData = sortedKeys.map(key => ({
+        label: key,
+        value: weeklyData[key].size
+      }));
+      
+      const svg = renderSimpleLineChart(chartData, 'Sessions', 3);
+      document.getElementById('sessionsChartContent').innerHTML = svg;
+    }
+    
+    function renderVolumeProgression(allData) {
+      const weeklyVolume = {};
+      
+      allData.forEach(d => {
+        const key = `C${d.cycle}W${d.week}`;
+        if (!weeklyVolume[key]) {
+          weeklyVolume[key] = 0;
+        }
+        weeklyVolume[key] += (parseFloat(d.weight) || 0);
+      });
+      
+      const sortedKeys = Object.keys(weeklyVolume).sort();
+      
+      if (sortedKeys.length === 0) {
+        document.getElementById('volumeChartContent').innerHTML = '<div class="no-data-message">No workout data yet.</div>';
+        return;
+      }
+      
+      const chartData = sortedKeys.map(key => ({
+        label: key,
+        value: weeklyVolume[key]
+      }));
+      
+      const svg = renderSimpleLineChart(chartData, 'Total kg', null);
+      
+      // Add summary stats
+      const totalVolume = Object.values(weeklyVolume).reduce((a, b) => a + b, 0);
+      const avgVolume = (totalVolume / sortedKeys.length).toFixed(0);
+      const maxVolume = Math.max(...Object.values(weeklyVolume)).toFixed(0);
+      
+      const stats = `
+        <div style="margin-top: 12px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; font-size: 12px;">
+          <div style="text-align: center; padding: 8px; background: #F5F5F5; border-radius: 6px;">
+            <div style="font-weight: 700; color: #00796B;">${totalVolume.toFixed(0)}kg</div>
+            <div style="color: #757575;">Total</div>
+          </div>
+          <div style="text-align: center; padding: 8px; background: #F5F5F5; border-radius: 6px;">
+            <div style="font-weight: 700; color: #00796B;">${avgVolume}kg</div>
+            <div style="color: #757575;">Avg/Week</div>
+          </div>
+          <div style="text-align: center; padding: 8px; background: #F5F5F5; border-radius: 6px;">
+            <div style="font-weight: 700; color: #00796B;">${maxVolume}kg</div>
+            <div style="color: #757575;">Peak Week</div>
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('volumeChartContent').innerHTML = svg + stats;
+    }
+    
+    function renderSimpleLineChart(data, unit, maxValue) {
+      const width = 450;
+      const height = 200;
+      const padding = 40;
+      
+      const values = data.map(d => d.value);
+      const max = maxValue || Math.max(...values);
+      const min = Math.min(...values);
+      const range = max - min || 1;
+      
+      const points = data.map((d, i) => {
+        const x = padding + (i / (data.length - 1 || 1)) * (width - padding * 2);
+        const y = height - padding - ((d.value - min) / range) * (height - padding * 2);
+        return { x, y, value: d.value, label: d.label };
+      });
+      
+      const pathData = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
+      
+      let svg = `<svg width="100%" height="${height}" viewBox="0 0 ${width} ${height}" style="max-width: 100%;">`;
+      
+      // Grid lines
+      for (let i = 0; i <= 4; i++) {
+        const y = padding + (i / 4) * (height - padding * 2);
+        svg += `<line x1="${padding}" y1="${y}" x2="${width - padding}" y2="${y}" class="chart-grid"/>`;
+        const labelValue = (max - (i / 4) * range).toFixed(0);
+        svg += `<text x="${padding - 5}" y="${y + 4}" text-anchor="end" class="chart-label">${labelValue}${unit ? ' ' + unit : ''}</text>`;
+      }
+      
+      // Area under line
+      const areaPath = pathData + ` L ${points[points.length - 1].x} ${height - padding} L ${padding} ${height - padding} Z`;
+      svg += `<path d="${areaPath}" fill="url(#gradient)" opacity="0.2"/>`;
+      
+      // Gradient definition
+      svg += `<defs><linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" style="stop-color:#00796B;stop-opacity:1" /><stop offset="100%" style="stop-color:#4CAF50;stop-opacity:1" /></linearGradient></defs>`;
+      
+      // Line
+      svg += `<path d="${pathData}" class="chart-line" stroke="url(#lineGradient)"/>`;
+      svg += `<defs><linearGradient id="lineGradient" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#00796B" /><stop offset="100%" style="stop-color:#4CAF50" /></linearGradient></defs>`;
+      
+      // Points
+      points.forEach((p, i) => {
+        svg += `<circle cx="${p.x}" cy="${p.y}" r="4" class="chart-dot"/>`;
+        if (i % Math.ceil(points.length / 8) === 0 || i === points.length - 1) {
+          svg += `<text x="${p.x}" y="${height - 10}" text-anchor="middle" class="chart-label">${p.label}</text>`;
+        }
+      });
+      
+      svg += '</svg>';
+      
+      return svg;
     }
     
     async function renderAllExerciseTrends(allData) {
