@@ -335,11 +335,19 @@
       padding-bottom: 8px;
     }
     
-    .converter-row {
+    .converter-grid {
       display: flex;
       align-items: center;
-      gap: 10px;
-      margin-bottom: 12px;
+      gap: 16px;
+      justify-content: center;
+    }
+    
+    .converter-box {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+      max-width: 200px;
     }
     
     .converter-input {
@@ -729,26 +737,26 @@
       
       <div class="converter-section">
         <h3>Unit Converter</h3>
-        <div class="converter-row">
-          <span class="converter-label">lb</span>
-          <input type="number" 
-                 id="lbInput" 
-                 class="converter-input" 
-                 placeholder="0.0" 
-                 step="0.5"
-                 oninput="convertLbToKg(this.value)">
-        </div>
-        <div style="text-align: center; margin: 8px 0;">
-          <button class="swap-btn" onclick="swapConverter()">⇅</button>
-        </div>
-        <div class="converter-row">
-          <span class="converter-label">kg</span>
-          <input type="number" 
-                 id="kgInput" 
-                 class="converter-input" 
-                 placeholder="0.0" 
-                 step="0.5"
-                 oninput="convertKgToLb(this.value)">
+        <div class="converter-grid">
+          <div class="converter-box">
+            <span class="converter-label">lb</span>
+            <input type="number" 
+                   id="lbInput" 
+                   class="converter-input" 
+                   placeholder="0.0" 
+                   step="0.5"
+                   oninput="convertLbToKg(this.value)">
+          </div>
+          <button class="swap-btn" onclick="swapConverter()">⇄</button>
+          <div class="converter-box">
+            <span class="converter-label">kg</span>
+            <input type="number" 
+                   id="kgInput" 
+                   class="converter-input" 
+                   placeholder="0.0" 
+                   step="0.5"
+                   oninput="convertKgToLb(this.value)">
+          </div>
         </div>
       </div>
       
@@ -1329,14 +1337,35 @@
     }
     
     async function renderAllExerciseTrends(allData) {
-      const allExercises = [...new Set(allData.map(d => d.exercise))];
+      // Get ALL exercises from workout definition
+      const allExercises = [];
+      Object.values(WORKOUTS).forEach(dayExercises => {
+        dayExercises.forEach(ex => {
+          if (!allExercises.includes(ex.name)) {
+            allExercises.push(ex.name);
+          }
+        });
+      });
       
       let html = '';
       
       allExercises.forEach(exerciseName => {
         const exerciseData = allData.filter(d => d.exercise === exerciseName);
         
-        if (exerciseData.length < 2) return;
+        if (exerciseData.length === 0) {
+          // Show exercise even with no data
+          html += `
+            <div style="margin-bottom: 16px; padding: 14px; background: #F5F5F5; border-radius: 8px; border-left: 4px solid #00796B; cursor: pointer; opacity: 0.6;" onclick="showExerciseChart('${exerciseName.replace(/'/g, "\\'")}')">
+              <div style="font-weight: 700; font-size: 14px; color: #212121; margin-bottom: 8px;">
+                ${exerciseName}
+              </div>
+              <div style="font-size: 12px; color: #757575;">
+                No data logged yet - Start tracking this exercise
+              </div>
+            </div>
+          `;
+          return;
+        }
         
         exerciseData.sort((a, b) => a.timestamp - b.timestamp);
         
@@ -1363,10 +1392,6 @@
           </div>
         `;
       });
-      
-      if (html === '') {
-        html = '<div class="no-data-message">Log more exercises to see trends.</div>';
-      }
       
       document.getElementById('exerciseTrendsContent').innerHTML = html;
     }
