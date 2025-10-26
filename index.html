@@ -158,6 +158,7 @@
       display: flex;
       flex-direction: column;
       justify-content: center;
+      position: relative;
     }
     
     .week-btn:active {
@@ -169,6 +170,19 @@
       color: white;
       box-shadow: 0 4px 12px rgba(0,121,107,0.4);
       border-width: 3px;
+    }
+    
+    .week-btn.current-badge::after {
+      content: 'Current';
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      background: #4CAF50;
+      color: white;
+      font-size: 8px;
+      padding: 2px 4px;
+      border-radius: 4px;
+      font-weight: 700;
     }
     
     .week-btn.deload {
@@ -280,11 +294,11 @@
     }
     
     .weight-input {
-      width: 70px;
+      width: 90px;
       padding: 8px 6px;
       border: 2px solid #E0E0E0;
       border-radius: 6px;
-      font-size: 15px;
+      font-size: 14px;
       font-weight: 600;
       text-align: center;
       transition: all 0.3s;
@@ -296,6 +310,10 @@
       border-color: #00796B;
       background: white;
       box-shadow: 0 0 0 3px rgba(0,121,107,0.1);
+    }
+    
+    .weight-input::placeholder {
+      color: #BDBDBD;
     }
     
     .weight-unit {
@@ -333,10 +351,6 @@
       fill: none;
       stroke: #00796B;
       stroke-width: 2;
-    }
-    
-    .chart-btn:active {
-      background: #B2DFDB;
     }
     
     .converter-section {
@@ -467,6 +481,49 @@
       left: 0;
       color: #00796B;
       font-weight: bold;
+    }
+    
+    .exercise-config-section {
+      background: white;
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 14px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    
+    .exercise-config-section h3 {
+      color: #00796B;
+      margin-bottom: 14px;
+      font-size: 17px;
+      font-weight: 700;
+      padding-bottom: 8px;
+      border-bottom: 3px solid #E0F2F1;
+    }
+    
+    .exercise-config-item {
+      padding: 10px;
+      background: #F5F5F5;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .exercise-config-name {
+      font-weight: 600;
+      font-size: 13px;
+      color: #212121;
+      flex: 1;
+    }
+    
+    .exercise-config-type {
+      font-size: 11px;
+      color: #00796B;
+      background: #E0F2F1;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-weight: 600;
     }
     
     .chart-container {
@@ -702,6 +759,13 @@
       width: 30px;
       height: 30px;
     }
+    
+    .input-hint {
+      font-size: 10px;
+      color: #757575;
+      margin-top: 2px;
+      font-style: italic;
+    }
   </style>
 </head>
 <body>
@@ -736,7 +800,7 @@
         </div>
         <div class="stat-card">
           <span class="stat-value" id="currentWeekDisplay">W42</span>
-          <span class="stat-label">Current</span>
+          <span class="stat-label">Selected</span>
         </div>
         <div class="stat-card">
           <span class="stat-value" id="totalSets">0</span>
@@ -784,9 +848,18 @@
         <div class="guideline-card">
           <h4>Superset Strategy</h4>
           <ul>
-            <li>Exercises marked 2a/2b are supersets</li>
+            <li>Exercises marked 1a/1b, 2a/2b are supersets</li>
             <li>Do set of 'a', rest 30s, do 'b', rest 60-90s</li>
             <li>Pairs non-competing muscle groups</li>
+          </ul>
+        </div>
+        
+        <div class="guideline-card">
+          <h4>Input Formats</h4>
+          <ul>
+            <li>Weight exercises: Enter kg (e.g., 75.5)</li>
+            <li>Bodyweight + load: Reps per set * weight (e.g., 8/8/7*5)</li>
+            <li>Timed holds: Minutes:seconds format (e.g., 1:30/1:20)</li>
           </ul>
         </div>
         
@@ -846,6 +919,14 @@
     
     <!-- SETTINGS TAB -->
     <div id="settings-tab" class="tab-content">
+      <div class="exercise-config-section">
+        <h3>Exercise Configuration</h3>
+        <p style="font-size: 12px; color: #757575; margin-bottom: 12px;">
+          Input types for each exercise
+        </p>
+        <div id="exerciseConfigList"></div>
+      </div>
+      
       <div class="action-container">
         <h3>Backup & Export</h3>
         <button class="export-btn" id="exportBtn">
@@ -905,41 +986,74 @@
       'Deload': 'Reduce weight by 40-50%. Active recovery week. Prep for next cycle.'
     };
     
+    // Exercise input types: 'weight' (kg), 'reps-weight' (8/8/7*5), 'time' (1:30/1:20)
+    const EXERCISE_TYPES = {
+      'Incline Barbell Bench Press': 'weight',
+      'Pull-Ups / Weighted': 'reps-weight',
+      'Bent-Over Barbell Row': 'weight',
+      'Dips': 'reps-weight',
+      'Face Pulls': 'weight',
+      'Barbell Curl': 'weight',
+      'French Press': 'weight',
+      'Dead Hangs': 'time',
+      'Back Squat': 'weight',
+      'Romanian Deadlift': 'weight',
+      'Bulgarian Split Squat': 'weight',
+      'Lying Leg Curl': 'weight',
+      'Standing Calf Raise': 'weight',
+      'Hanging Leg Raises': 'reps-weight',
+      'Goblet Squat (KB)': 'weight',
+      'Deadlift (Conv/Sumo)': 'weight',
+      'Overhead Press (Barbell)': 'weight',
+      'Lat Pulldown (Wide)': 'weight',
+      'Side Delts': 'weight',
+      'Flat Dumbbell Press': 'weight',
+      'Kettlebell Swings': 'weight',
+      'Plank': 'time',
+      'Mobility Work': 'time'
+    };
+    
     const WORKOUTS = {
       upper: [
         {name: 'Incline Barbell Bench Press', category: 'Compound Push', sets: '4x8-10', notes: 'Upper chest focus'},
-        {name: 'Pull-Ups / Weighted', category: 'Compound Pull', sets: '4x6-10', notes: 'Superset 2a', superset: true},
-        {name: 'Bent-Over Barbell Row', category: 'Compound Pull', sets: '4x8-10', notes: 'Superset 2b', superset: true},
-        {name: 'Dips', category: 'Accessory Push', sets: '3x10-15', notes: 'Superset 3a', superset: true},
-        {name: 'Face Pulls', category: 'Accessory Pull', sets: '3x15-20', notes: 'Superset 3b', superset: true},
-        {name: 'Barbell Curl', category: 'Arms', sets: '3x10-12', notes: 'Superset 4a', superset: true},
-        {name: 'Overhead Tricep Extension', category: 'Arms', sets: '3x10-12', notes: 'Superset 4b', superset: true},
+        {name: 'Pull-Ups / Weighted', category: 'Compound Pull', sets: '4x6-10', notes: 'Superset 1a', superset: true},
+        {name: 'Bent-Over Barbell Row', category: 'Compound Pull', sets: '4x8-10', notes: 'Superset 1b', superset: true},
+        {name: 'Dips', category: 'Accessory Push', sets: '3x10-15', notes: 'Superset 2a', superset: true},
+        {name: 'Face Pulls', category: 'Accessory Pull', sets: '3x15-20', notes: 'Superset 2b', superset: true},
+        {name: 'Barbell Curl', category: 'Arms', sets: '3x10-12', notes: 'Superset 3a', superset: true},
+        {name: 'French Press', category: 'Arms', sets: '3x10-12', notes: 'Superset 3b', superset: true},
         {name: 'Dead Hangs', category: 'Mobility', sets: '3x30-45s', notes: 'Shoulder health'}
       ],
       lower: [
         {name: 'Back Squat', category: 'Compound Squat', sets: '4x8-10', notes: 'King of lower body'},
         {name: 'Romanian Deadlift', category: 'Compound Hinge', sets: '4x8-10', notes: 'Hamstring focus'},
-        {name: 'Bulgarian Split Squat', category: 'Unilateral', sets: '3x10-12/leg', notes: 'Superset 2a', superset: true},
-        {name: 'Lying Leg Curl', category: 'Posterior Chain', sets: '3x12-15', notes: 'Superset 2b', superset: true},
-        {name: 'Standing Calf Raise', category: 'Calves', sets: '4x15-20', notes: 'Superset 3a', superset: true},
-        {name: 'Hanging Leg Raises', category: 'Core', sets: '3x12-15', notes: 'Superset 3b', superset: true},
+        {name: 'Bulgarian Split Squat', category: 'Unilateral', sets: '3x10-12/leg', notes: 'Superset 1a', superset: true},
+        {name: 'Lying Leg Curl', category: 'Posterior Chain', sets: '3x12-15', notes: 'Superset 1b', superset: true},
+        {name: 'Standing Calf Raise', category: 'Calves', sets: '4x15-20', notes: 'Superset 2a', superset: true},
+        {name: 'Hanging Leg Raises', category: 'Core', sets: '3x12-15', notes: 'Superset 2b', superset: true},
         {name: 'Goblet Squat (KB)', category: 'Mobility', sets: '2x15', notes: 'Light weight'}
       ],
       full: [
         {name: 'Deadlift (Conv/Sumo)', category: 'Compound Hinge', sets: '4x5-8', notes: 'Full body power'},
-        {name: 'Overhead Press (Barbell)', category: 'Compound Push', sets: '4x8-10', notes: 'Superset 2a', superset: true},
-        {name: 'Lat Pulldown (Wide)', category: 'Compound Pull', sets: '3x10-12', notes: 'Superset 2b', superset: true},
-        {name: 'Goblet Squat (KB)', category: 'Lower Quad', sets: '3x12-15', notes: 'Superset 3a', superset: true},
-        {name: 'Flat Dumbbell Press', category: 'Upper Push', sets: '3x10-12', notes: 'Superset 3b - Better stretch', superset: true},
-        {name: 'Kettlebell Swings', category: 'Conditioning', sets: '4x15-20', notes: 'Power endurance'},
-        {name: 'Ab Wheel / Plank', category: 'Core', sets: '3x10-15 or 3x45s', notes: ''},
-        {name: 'Mobility Work', category: 'Mobility', sets: '2 rounds', notes: 'Hip flexor + shoulders'}
+        {name: 'Overhead Press (Barbell)', category: 'Compound Push', sets: '4x8-10', notes: 'Superset 1a', superset: true},
+        {name: 'Lat Pulldown (Wide)', category: 'Compound Pull', sets: '3x10-12', notes: 'Superset 1b', superset: true},
+        {name: 'Side Delts', category: 'Upper Push', sets: '3x12-15', notes: 'Superset 2a', superset: true},
+        {name: 'Flat Dumbbell Press', category: 'Upper Push', sets: '3x10-12', notes: 'Superset 2b', superset: true},
+        {name: 'Kettlebell Swings', category: 'Conditioning', sets: '4x15-20', notes: 'Superset 3a - Glute/hip hinge', superset: true},
+        {name: 'Plank', category: 'Core', sets: '3x45-60s', notes: 'Superset 3b', superset: true},
+        {name: 'Mobility Work', category: 'Mobility', sets: '2 rounds', notes: 'Hip + shoulders'}
       ]
     };
     
+    // Current week that user is viewing (selected week)
+    let selectedWeek = parseInt(localStorage.getItem('selectedWeek')) || 42;
+    // Actual current week for training progress
     let currentWeek = parseInt(localStorage.getItem('currentWeek')) || 42;
     let currentCycle = parseInt(localStorage.getItem('currentCycle')) || 1;
     let db;
+    
+    // Data migration flag
+    const MIGRATION_DONE = 'migration_v1_done';
     
     // Converter functions
     function convertLbToKg(lb) {
@@ -975,6 +1089,46 @@
           }
         };
       });
+    }
+    
+    // Data migration: Rename Day 3 "Goblet Squat (KB)" to "Side Delts"
+    async function migrateData() {
+      if (localStorage.getItem(MIGRATION_DONE)) {
+        return; // Migration already done
+      }
+      
+      const allData = await loadAllData();
+      let migrationCount = 0;
+      
+      for (const record of allData) {
+        if (record.day === 'full' && record.exercise === 'Goblet Squat (KB)') {
+          // Update exercise name to "Side Delts"
+          const oldId = record.id;
+          const newId = `${record.cycle}-${record.week}-${record.day}-Side Delts`;
+          
+          const transaction = db.transaction(['workouts'], 'readwrite');
+          const store = transaction.objectStore('workouts');
+          
+          // Delete old entry
+          store.delete(oldId);
+          
+          // Create new entry with updated name
+          const newRecord = {
+            ...record,
+            id: newId,
+            exercise: 'Side Delts'
+          };
+          store.put(newRecord);
+          
+          migrationCount++;
+        }
+      }
+      
+      localStorage.setItem(MIGRATION_DONE, 'true');
+      
+      if (migrationCount > 0) {
+        console.log(`Migration complete: ${migrationCount} records updated`);
+      }
     }
     
     async function saveWeight(week, day, exercise, weight) {
@@ -1018,7 +1172,7 @@
       const uniqueSessions = new Set(currentCycleData.map(d => `${d.week}-${d.day}`)).size;
       document.getElementById('workoutsLogged').textContent = uniqueSessions;
       document.getElementById('totalSets').textContent = currentCycleData.length;
-      document.getElementById('currentWeekDisplay').textContent = `W${currentWeek}`;
+      document.getElementById('currentWeekDisplay').textContent = `W${selectedWeek}`;
       
       const uniqueCycles = new Set(allData.map(d => d.cycle)).size;
       const uniqueWeeks = new Set(allData.map(d => `${d.cycle}-${d.week}`)).size;
@@ -1033,7 +1187,7 @@
     
     function updateCycleInfo() {
       const cycleInfo = document.getElementById('cycleInfo');
-      cycleInfo.innerHTML = `<strong>Cycle ${currentCycle}</strong> - Week ${currentWeek} of 12`;
+      cycleInfo.innerHTML = `<strong>Cycle ${currentCycle}</strong> - Viewing Week ${selectedWeek} (Current training week: W${currentWeek})`;
     }
     
     function switchTab(tab) {
@@ -1045,34 +1199,82 @@
       
       if (tab === 'progress') {
         renderProgressCharts();
+      } else if (tab === 'settings') {
+        renderExerciseConfig();
       }
     }
     
     function renderWeekSelector() {
       const grid = document.getElementById('weekGrid');
-      grid.innerHTML = WEEKS.map(week => `
-        <button class="week-btn ${week === currentWeek ? 'active' : ''} ${week === 1 ? 'deload' : ''}" 
-                onclick="selectWeek(${week})">
-          W${week}
-          <small>${PHASES[week]}</small>
-        </button>
-      `).join('');
+      grid.innerHTML = WEEKS.map(week => {
+        const isSelected = week === selectedWeek;
+        const isCurrent = week === currentWeek;
+        return `
+          <button class="week-btn ${isSelected ? 'active' : ''} ${week === 1 ? 'deload' : ''} ${isCurrent ? 'current-badge' : ''}" 
+                  onclick="selectWeek(${week})">
+            W${week}
+            <small>${PHASES[week]}</small>
+          </button>
+        `;
+      }).join('');
       updatePhaseInfo();
     }
     
     function updatePhaseInfo() {
       const info = document.getElementById('phaseInfo');
-      const phase = PHASES[currentWeek];
-      info.innerHTML = `<strong>Week ${currentWeek} - ${phase} Phase</strong><br>${PHASE_DESCRIPTIONS[phase]}`;
+      const phase = PHASES[selectedWeek];
+      info.innerHTML = `<strong>Week ${selectedWeek} - ${phase} Phase</strong><br>${PHASE_DESCRIPTIONS[phase]}`;
     }
     
     function selectWeek(week) {
-      currentWeek = week;
-      localStorage.setItem('currentWeek', week);
+      selectedWeek = week;
+      localStorage.setItem('selectedWeek', week);
       renderWeekSelector();
       renderAllWorkouts();
       updateStats();
       window.scrollTo(0, 0);
+    }
+    
+    function getInputPlaceholder(exerciseName) {
+      const type = EXERCISE_TYPES[exerciseName] || 'weight';
+      switch(type) {
+        case 'weight':
+          return '—';
+        case 'reps-weight':
+          return '8/8/7*5';
+        case 'time':
+          return '1:30';
+        default:
+          return '—';
+      }
+    }
+    
+    function getInputHint(exerciseName) {
+      const type = EXERCISE_TYPES[exerciseName] || 'weight';
+      switch(type) {
+        case 'weight':
+          return '';
+        case 'reps-weight':
+          return 'Format: reps/reps/reps*weight';
+        case 'time':
+          return 'Format: mm:ss per set';
+        default:
+          return '';
+      }
+    }
+    
+    function getInputUnit(exerciseName) {
+      const type = EXERCISE_TYPES[exerciseName] || 'weight';
+      switch(type) {
+        case 'weight':
+          return 'kg';
+        case 'reps-weight':
+          return '';
+        case 'time':
+          return '';
+        default:
+          return 'kg';
+      }
     }
     
     async function renderAllWorkouts() {
@@ -1090,7 +1292,11 @@
         html += `<div class="day-header">${dayTitles[day]}</div>`;
         
         for (const exercise of exercises) {
-          const weight = await loadWeight(currentWeek, day, exercise.name);
+          const weight = await loadWeight(selectedWeek, day, exercise.name);
+          const placeholder = getInputPlaceholder(exercise.name);
+          const hint = getInputHint(exercise.name);
+          const unit = getInputUnit(exercise.name);
+          
           html += `
             <div class="exercise-row ${exercise.superset ? 'superset' : ''}">
               <div class="exercise-info">
@@ -1099,16 +1305,16 @@
                   <span class="exercise-sets">${exercise.sets}</span>
                   <span style="font-size: 10px;">${exercise.notes}</span>
                 </div>
+                ${hint ? `<div class="input-hint">${hint}</div>` : ''}
               </div>
               <div class="weight-input-group">
-                <input type="number" 
+                <input type="text" 
                        class="weight-input" 
-                       placeholder="0.0"
-                       step="2.5"
+                       placeholder="${placeholder}"
                        value="${weight}"
                        onchange="handleWeightChange('${day}', '${exercise.name.replace(/'/g, "\\'")}', this.value)"
-                       inputmode="decimal">
-                <span class="weight-unit">kg</span>
+                       inputmode="${EXERCISE_TYPES[exercise.name] === 'weight' ? 'decimal' : 'text'}">
+                ${unit ? `<span class="weight-unit">${unit}</span>` : ''}
                 <button class="chart-btn" onclick="showExerciseChart('${exercise.name.replace(/'/g, "\\'")}')">
                   <svg viewBox="0 0 24 24">
                     <rect x="4" y="14" width="4" height="6"/>
@@ -1128,7 +1334,14 @@
     }
     
     async function handleWeightChange(day, exercise, weight) {
-      await saveWeight(currentWeek, day, exercise, weight);
+      await saveWeight(selectedWeek, day, exercise, weight);
+      
+      // Update currentWeek if user logged data for a week ahead
+      if (selectedWeek > currentWeek || (currentWeek === 1 && selectedWeek === 42)) {
+        currentWeek = selectedWeek;
+        localStorage.setItem('currentWeek', currentWeek);
+        renderWeekSelector();
+      }
     }
     
     function showExerciseChart(exerciseName) {
@@ -1156,19 +1369,65 @@
       document.getElementById('modalChartContent').innerHTML = svg;
     }
     
+    function parseWeightValue(value, exerciseName) {
+      // For different input types, extract numeric value for charting
+      const type = EXERCISE_TYPES[exerciseName] || 'weight';
+      
+      if (!value) return 0;
+      
+      switch(type) {
+        case 'weight':
+          return parseFloat(value) || 0;
+        case 'reps-weight':
+          // Extract weight from format like "8/8/7*5" -> 5
+          const match = value.match(/\*(\d+\.?\d*)/);
+          return match ? parseFloat(match[1]) : 0;
+        case 'time':
+          // Convert mm:ss to total seconds for comparison
+          const timeMatch = value.match(/(\d+):(\d+)/);
+          if (timeMatch) {
+            return parseInt(timeMatch[1]) * 60 + parseInt(timeMatch[2]);
+          }
+          return parseFloat(value) || 0;
+        default:
+          return parseFloat(value) || 0;
+      }
+    }
+    
+    function formatWeightDisplay(value, exerciseName) {
+      const type = EXERCISE_TYPES[exerciseName] || 'weight';
+      
+      switch(type) {
+        case 'weight':
+          return `${value}kg`;
+        case 'reps-weight':
+          return value;
+        case 'time':
+          // If it's seconds, convert to mm:ss
+          if (typeof value === 'number' && value > 90) {
+            const mins = Math.floor(value / 60);
+            const secs = value % 60;
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+          }
+          return value;
+        default:
+          return `${value}kg`;
+      }
+    }
+    
     function renderLineChart(data, exerciseName) {
       const width = 450;
       const height = 250;
       const padding = 40;
       
-      const weights = data.map(d => parseFloat(d.weight) || 0);
+      const weights = data.map(d => parseWeightValue(d.weight, exerciseName));
       const maxWeight = Math.max(...weights);
       const minWeight = Math.min(...weights);
       const range = maxWeight - minWeight || 10;
       
       const points = data.map((d, i) => {
         const x = padding + (i / (data.length - 1 || 1)) * (width - padding * 2);
-        const y = height - padding - ((parseFloat(d.weight) - minWeight) / range) * (height - padding * 2);
+        const y = height - padding - ((parseWeightValue(d.weight, exerciseName) - minWeight) / range) * (height - padding * 2);
         return { x, y, weight: d.weight, label: `C${d.cycle}W${d.week}` };
       });
       
@@ -1181,7 +1440,8 @@
         const y = padding + (i / 4) * (height - padding * 2);
         svg += `<line x1="${padding}" y1="${y}" x2="${width - padding}" y2="${y}" class="chart-grid"/>`;
         const labelWeight = (maxWeight - (i / 4) * range).toFixed(1);
-        svg += `<text x="${padding - 5}" y="${y + 4}" text-anchor="end" class="chart-label">${labelWeight}kg</text>`;
+        const displayLabel = formatWeightDisplay(labelWeight, exerciseName);
+        svg += `<text x="${padding - 5}" y="${y + 4}" text-anchor="end" class="chart-label">${displayLabel}</text>`;
       }
       
       // Line
@@ -1196,19 +1456,23 @@
       svg += '</svg>';
       
       // Stats
-      const first = parseFloat(data[0].weight);
-      const last = parseFloat(data[data.length - 1].weight);
+      const first = parseWeightValue(data[0].weight, exerciseName);
+      const last = parseWeightValue(data[data.length - 1].weight, exerciseName);
       const change = last - first;
       const changePercent = first > 0 ? ((change / first) * 100).toFixed(1) : 0;
+      
+      const firstDisplay = formatWeightDisplay(data[0].weight, exerciseName);
+      const lastDisplay = formatWeightDisplay(data[data.length - 1].weight, exerciseName);
+      const changeDisplay = formatWeightDisplay(Math.abs(change), exerciseName);
       
       svg += `
         <div style="margin-top: 16px; padding: 12px; background: #F5F5F5; border-radius: 8px;">
           <div style="display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px;">
-            <span><strong>First:</strong> ${first}kg</span>
-            <span><strong>Latest:</strong> ${last}kg</span>
+            <span><strong>First:</strong> ${firstDisplay}</span>
+            <span><strong>Latest:</strong> ${lastDisplay}</span>
           </div>
           <div style="font-size: 14px; font-weight: 700; color: ${change >= 0 ? '#4CAF50' : '#F44336'}; text-align: center;">
-            ${change >= 0 ? '+' : ''}${change.toFixed(1)}kg (${change >= 0 ? '+' : ''}${changePercent}%)
+            ${change >= 0 ? '+' : '-'}${changeDisplay} (${change >= 0 ? '+' : ''}${changePercent}%)
           </div>
         </div>
       `;
@@ -1249,14 +1513,53 @@
         return;
       }
       
-      // Create line chart data
+      // Create bar chart data showing sessions per week (0-3)
       const chartData = sortedKeys.map(key => ({
         label: key,
         value: weeklyData[key].size
       }));
       
-      const svg = renderSimpleLineChart(chartData, 'Sessions', 3);
+      const svg = renderBarChart(chartData, 'Sessions', 3);
       document.getElementById('sessionsChartContent').innerHTML = svg;
+    }
+    
+    function renderBarChart(data, unit, maxValue) {
+      const width = 450;
+      const height = 200;
+      const padding = 40;
+      const barWidth = Math.min(30, (width - padding * 2) / data.length - 10);
+      
+      const max = maxValue || Math.max(...data.map(d => d.value));
+      
+      let svg = `<svg width="100%" height="${height}" viewBox="0 0 ${width} ${height}" style="max-width: 100%;">`;
+      
+      // Y-axis grid lines and labels
+      for (let i = 0; i <= max; i++) {
+        const y = height - padding - (i / max) * (height - padding * 2);
+        svg += `<line x1="${padding}" y1="${y}" x2="${width - padding}" y2="${y}" class="chart-grid"/>`;
+        svg += `<text x="${padding - 5}" y="${y + 4}" text-anchor="end" class="chart-label">${i}</text>`;
+      }
+      
+      // Bars
+      data.forEach((d, i) => {
+        const x = padding + (i + 0.5) * ((width - padding * 2) / data.length) - barWidth / 2;
+        const barHeight = (d.value / max) * (height - padding * 2);
+        const y = height - padding - barHeight;
+        
+        svg += `<rect x="${x}" y="${y}" width="${barWidth}" height="${barHeight}" fill="#00796B" rx="4"/>`;
+        
+        // Value label on top of bar
+        svg += `<text x="${x + barWidth / 2}" y="${y - 5}" text-anchor="middle" class="chart-label" style="font-weight: 600; fill: #00796B;">${d.value}</text>`;
+        
+        // X-axis label (show every nth label to avoid crowding)
+        if (i % Math.ceil(data.length / 10) === 0 || i === data.length - 1) {
+          svg += `<text x="${x + barWidth / 2}" y="${height - 10}" text-anchor="middle" class="chart-label">${d.label}</text>`;
+        }
+      });
+      
+      svg += '</svg>';
+      
+      return svg;
     }
     
     function renderVolumeProgression(allData) {
@@ -1267,7 +1570,11 @@
         if (!weeklyVolume[key]) {
           weeklyVolume[key] = 0;
         }
-        weeklyVolume[key] += (parseFloat(d.weight) || 0);
+        // Only add weight-type exercises to volume
+        const parsedWeight = parseWeightValue(d.weight, d.exercise);
+        if (EXERCISE_TYPES[d.exercise] === 'weight') {
+          weeklyVolume[key] += parsedWeight;
+        }
       });
       
       const sortedKeys = Object.keys(weeklyVolume).sort();
@@ -1394,15 +1701,19 @@
         
         exerciseData.sort((a, b) => a.timestamp - b.timestamp);
         
-        const first = parseFloat(exerciseData[0].weight) || 0;
-        const last = parseFloat(exerciseData[exerciseData.length - 1].weight) || 0;
+        const first = parseWeightValue(exerciseData[0].weight, exerciseName);
+        const last = parseWeightValue(exerciseData[exerciseData.length - 1].weight, exerciseName);
         const change = last - first;
         const changePercent = first > 0 ? ((change / first) * 100).toFixed(1) : 0;
+        
+        const firstDisplay = formatWeightDisplay(exerciseData[0].weight, exerciseName);
+        const lastDisplay = formatWeightDisplay(exerciseData[exerciseData.length - 1].weight, exerciseName);
+        const changeDisplay = Math.abs(change).toFixed(1);
         
         // Create mini chart
         const chartData = exerciseData.map(d => ({
           label: `C${d.cycle}W${d.week}`,
-          value: parseFloat(d.weight) || 0
+          value: parseWeightValue(d.weight, d.exercise)
         }));
         
         const miniChart = renderMiniLineChart(chartData);
@@ -1413,10 +1724,10 @@
               ${exerciseName}
             </div>
             <div style="display: flex; justify-content: space-between; font-size: 12px; color: #555; margin-bottom: 8px;">
-              <span>First: ${first}kg</span>
-              <span>Latest: ${last}kg</span>
+              <span>First: ${firstDisplay}</span>
+              <span>Latest: ${lastDisplay}</span>
               <span style="color: ${change >= 0 ? '#4CAF50' : '#F44336'}; font-weight: 600;">
-                ${change >= 0 ? '+' : ''}${change.toFixed(1)}kg (${changePercent}%)
+                ${change >= 0 ? '+' : ''}${changeDisplay} (${changePercent}%)
               </span>
             </div>
             ${miniChart}
@@ -1463,6 +1774,45 @@
       return svg;
     }
     
+    function renderExerciseConfig() {
+      const allExercises = [];
+      Object.values(WORKOUTS).forEach(dayExercises => {
+        dayExercises.forEach(ex => {
+          if (!allExercises.includes(ex.name)) {
+            allExercises.push(ex.name);
+          }
+        });
+      });
+      
+      let html = '';
+      
+      for (const exerciseName of allExercises) {
+        const type = EXERCISE_TYPES[exerciseName] || 'weight';
+        let typeLabel = '';
+        
+        switch(type) {
+          case 'weight':
+            typeLabel = 'Weight (kg)';
+            break;
+          case 'reps-weight':
+            typeLabel = 'Reps/Weight';
+            break;
+          case 'time':
+            typeLabel = 'Time (mm:ss)';
+            break;
+        }
+        
+        html += `
+          <div class="exercise-config-item">
+            <span class="exercise-config-name">${exerciseName}</span>
+            <span class="exercise-config-type">${typeLabel}</span>
+          </div>
+        `;
+      }
+      
+      document.getElementById('exerciseConfigList').innerHTML = html;
+    }
+    
     async function exportData() {
       const data = await loadAllData();
       
@@ -1472,8 +1822,8 @@
       }
       
       const csv = [
-        'Cycle,Week,Day,Exercise,Weight (kg),Date',
-        ...data.map(d => `${d.cycle},W${d.week},${d.day},${d.exercise},${d.weight},${new Date(d.timestamp).toLocaleDateString()}`)
+        'Cycle,Week,Day,Exercise,Weight,Date',
+        ...data.map(d => `${d.cycle},W${d.week},${d.day},${d.exercise},"${d.weight}",${new Date(d.timestamp).toLocaleDateString()}`)
       ].join('\n');
       
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
@@ -1495,8 +1845,10 @@
       if (confirm('Start a new 12-week cycle? Your progress data will be preserved for tracking.')) {
         currentCycle++;
         currentWeek = 42;
+        selectedWeek = 42;
         localStorage.setItem('currentCycle', currentCycle);
         localStorage.setItem('currentWeek', currentWeek);
+        localStorage.setItem('selectedWeek', selectedWeek);
         
         renderWeekSelector();
         renderAllWorkouts();
@@ -1551,7 +1903,7 @@
       navigator.serviceWorker.register(
         URL.createObjectURL(
           new Blob([`
-            const CACHE_NAME = 'fitpal-v3';
+            const CACHE_NAME = 'fitpal-v4';
             self.addEventListener('install', (e) => {
               e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(['./', './index.html'])));
             });
@@ -1575,6 +1927,7 @@
     (async () => {
       try {
         await initDB();
+        await migrateData(); // Run data migration
         renderWeekSelector();
         await renderAllWorkouts();
         await updateStats();
